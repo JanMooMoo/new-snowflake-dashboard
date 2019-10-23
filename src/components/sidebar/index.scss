@@ -12,7 +12,7 @@
 }
 
 
-@media only screen and (max-width: 950px) {
+@media only screen and (max-width: 600px) {
   .sidebar {
   background-color: $snow-light-gray;
   padding-left: 0;
@@ -24,8 +24,6 @@
   padding-top: 30px;
   }
 }
-
-
 
 .sidebar__link {
   color: #626262;
