@@ -17,5 +17,11 @@
 		"title": "WhatOptionDoYouPrefer",
 		"category": "Entertainment",
 		"price": "10000000000000000000" 
+	},
+	"0x7Df28F6007f09f30f0dF0457d54eF950baB0De5D":{
+		"title":"Voting",
+		"category":"Community",
+		"price":"5000"
 	}
+	
 }

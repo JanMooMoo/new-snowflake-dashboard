@@ -10,7 +10,7 @@ import TransactionButton from '../../common/TransactionButton'
 
 import ABI from './abi';
 
-export default function Status ( props ) {
+export default function Voting ( props ) {
   const context = useWeb3Context()
   const [currentStatus, setCurrentStatus]  = useState('')
   const [newStatus, setNewStatus]  = useState('')
@@ -21,7 +21,7 @@ export default function Status ( props ) {
   const clientRaindropContract = useNamedContract('clientRaindrop')
   const statusContract = useGenericContract('0x16fD6e2E1C4afB9C4e7B901141706596317e4ceB', ABI)
   useAccountEffect(() => {
-    statusContract.methods.getStatus(props.ein).call().then(status => setCurrentStatus(status));
+    statusContract.methods.getStatus(props.ein).call().then(status => setCurrentStatus(status))
   })
 
   function checkStatus () {

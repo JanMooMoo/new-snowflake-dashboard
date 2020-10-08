@@ -68,7 +68,6 @@ function DappPreview(props) {
     details.price = resolversJson[id].price;
     details.logo = `${process.env.PUBLIC_URL}/legacy/${id}/logo.png`;
   }
-
   function displayButton() {
     if (!hasIdentity) {
       return (<></>);

@@ -33,6 +33,10 @@ import {
   WhatOptionYouPreferView2,
 } from '../../legacy/Rinkeby/0xCCB4Ea50F4e4C3f5db8457B575E5Eb498ed7F242/index';
 
+import {
+  Votes,
+} from '../../legacy/Rinkeby/0x7Df28F6007f09f30f0dF0457d54eF950baB0De5D/index';
+
 
 function LegacyDapp(props) {
   const user = useContext(SnowflakeContext);
@@ -60,6 +64,10 @@ function LegacyDapp(props) {
     
 	  if (id === '0xCCB4Ea50F4e4C3f5db8457B575E5Eb498ed7F242') {
       return <WhatOptionYouPreferView2 ein={ein} />;
+    }
+
+    if (id === '0x7Df28F6007f09f30f0dF0457d54eF950baB0De5D') {
+      return <Votes ein={ein} />;
     }
     
     return <Status ein={ein} />;
