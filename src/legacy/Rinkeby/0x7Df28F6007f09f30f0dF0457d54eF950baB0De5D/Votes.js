@@ -43,7 +43,7 @@ export default function Votes({ ein }) {
   const operatorAddress = '0x7Df28F6007f09f30f0dF0457d54eF950baB0De5D';
   const resolverContract = useGenericContract(operatorAddress, ABI)
 
-  const [page, setPage]  = useState(4)
+  const [page, setPage]  = useState(1)
 
   useAccountEffect(() => {
     resolverContract.methods.getMaxCandidates().call().then(Candidates => getTotalCandidates(Candidates));
@@ -56,7 +56,6 @@ export default function Votes({ ein }) {
     
   })
 
- console.log("check",totalCandidates[1])
    
   function goToRegistrationPage() {
    setPage(1)
@@ -133,8 +132,6 @@ method={() => resolverContract.methods.becomeCandidate(ein)}/>
 
   if(page === 2){
 
-    console.log('checdsd',number)
-    console.log('checks',totalCandidates[0].length)
 
     body = <div>
    <ChartPage 
@@ -151,7 +148,7 @@ method={() => resolverContract.methods.becomeCandidate(ein)}/>
     
     body = <div className="registrationWrapper"> <div className ="registerAsVoter" style ={{textAlign:"center"}}>
       <p>Disclaimer</p>
-      <p>By getting this application on the dapp-store, you are automatically registered as a voter, & could participate on the voting process.
+      <p>By getting this application on the dapp-store, you are automatically registered as a voter, & could participate in the voting process.
       </p>
       <div className="registrationImage"><img src={require('./Images/Votingregistration.png')} alt="snow" className="registrationImg"/></div>
       

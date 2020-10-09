@@ -70,14 +70,14 @@ export default class EditAccountDialog extends Component {
         }
         
         votingContract.events.voted({fromBlock:this.state.blockNumber, toBlock:'latest'})
-        .on('data',(log) => {  
+        .on('data',async(log) => {  
    
         const getIndex = (element) => element == parseInt(log.returnValues._candidate);
         let index = this.state.maxCandidates.findIndex(getIndex);
         let votes =  [...this.state.votes]
         let count= this.state.votes[index];
             count = parseInt(count)+1;
-            votes[index] = count
+            votes[index] = await votingContract.methods.candidates(parseInt(log.returnValues._candidate)).call();
             this.setState({votes})
             
         })
