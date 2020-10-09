@@ -161,7 +161,8 @@ export default class EditAccountDialog extends Component {
 
                 {this.state.loading &&<div className="spinner"/>} 
                 {!this.state.loading && <div className="dashboard-bar">
-                 
+                <p className="pollInfo ml-2" >Candidates: {this.state.maxCandidates.length}/{this.props.maxCandidates}</p> 
+
                 {this.props.beCandidate}
               <Bar className ="bars"
                 options={{
@@ -170,7 +171,7 @@ export default class EditAccountDialog extends Component {
                 title:{
                 display: true,
                 position:"top",
-                text: 'Based On Hydro Revenue',
+                text: 'Sample Poll',
                 fontSize: 16,
                 lineHeight:5.5,
                 padding:1,
@@ -194,8 +195,7 @@ export default class EditAccountDialog extends Component {
               
 			<div>
 				</div>
-                <div style={{display:'inline-block',textAlign:'center',width: '100%'}} className="divButtons">
-                
+                <div style={{display:'inline-block',textAlign:'center',width: '100%'}} className="divButtons">        
                 {!this.state.loading &&<select className="selectOptions" onChange={this.handleChangeCandidate}>
                 {this.state.maxCandidates.map((candidate,index)=><option key={index} 
                     value={candidate} 

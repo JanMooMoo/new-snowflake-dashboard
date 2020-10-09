@@ -16,8 +16,10 @@ import TransactionButton from '../../common/TransactionButton';
 import CustomButton from './customButton/CustomButton';
 import { useWeb3Context } from 'web3-react';
 import { number } from 'prop-types';
-import ChartPage from './ChartPage'
-import VerificationPage from './VerificationPage'
+import ChartPage from './ChartPage';
+import VerificationPage from './VerificationPage';
+import ProfilePage from './ProfilePage';
+import Identicon from '../../../components/identicon';
 
 // import ShowCampaignStats from './ShowCampaignStats';
 
@@ -41,7 +43,7 @@ export default function Votes({ ein }) {
   const operatorAddress = '0x7Df28F6007f09f30f0dF0457d54eF950baB0De5D';
   const resolverContract = useGenericContract(operatorAddress, ABI)
 
-  const [page, setPage]  = useState(1)
+  const [page, setPage]  = useState(4)
 
   useAccountEffect(() => {
     resolverContract.methods.getMaxCandidates().call().then(Candidates => getTotalCandidates(Candidates));
@@ -54,7 +56,7 @@ export default function Votes({ ein }) {
     
   })
 
- 
+ console.log("check",totalCandidates[1])
    
   function goToRegistrationPage() {
    setPage(1)
@@ -68,6 +70,10 @@ export default function Votes({ ein }) {
   function goToVerificationPage() {
     setPage(3)  
   
+  }
+
+  function goToProfilePage() {
+    setPage(4)  
   }
 
   
@@ -115,6 +121,10 @@ method={() => resolverContract.methods.becomeCandidate(ein)}/>
 
   let body = "1"
 
+   
+  if(page === 4){
+    body = <ProfilePage ein={ein} goToVoting={goToVotingPage}/>
+  }
 
   
   if(page === 3){
@@ -124,13 +134,13 @@ method={() => resolverContract.methods.becomeCandidate(ein)}/>
   if(page === 2){
 
     console.log('checdsd',number)
-    console.log('check',totalCandidates[0].length)
-    let total = totalCandidates[0].length
+    console.log('checks',totalCandidates[0].length)
 
     body = <div>
    <ChartPage 
    beCandidate = {becomeCandidate}
-   vote = {resolverContract.methods.vote}/>
+   vote = {resolverContract.methods.vote}
+   maxCandidates={totalCandidates[1]}/>
   </div>
     
     
@@ -178,10 +188,11 @@ method={() => resolverContract.methods.becomeCandidate(ein)}/>
     <div className="background">
       
        <ul className="voting-navbar align-items-center" style={{alignItems:'center'}}>
-       <li className="nav-item"  onClick={goToRegistrationPage}>Register </li>
+       <li className="nav-item ml-5" onClick={goToRegistrationPage}>Register </li>
        <li className="nav-item ml-5" onClick={goToVerificationPage}>Verify</li>
        <li className="nav-item ml-5" onClick={goToVotingPage}>Vote </li>
-       <li className="nav-item ml-5">Profile </li>
+       <li className="nav-item ml-5" onClick={goToProfilePage}>Profile </li>
+    
       </ul>
 
  
