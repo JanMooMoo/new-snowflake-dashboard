@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 import React, { Component } from 'react';
 
 
@@ -42,7 +44,7 @@ class ChartDeadline extends Component {
      
      if(this.props.unixTime < this.state.dateNow)
         return(           
-            <p>Election is closed</p>);
+            <p className="deadlineInfo ml-2">Election is closed</p>);
                                              
      else
        return (

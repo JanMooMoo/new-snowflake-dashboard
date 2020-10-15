@@ -73,12 +73,12 @@ export default function Registration({ ein,electionABI, electionAddress,account}
       {title}
       <div className="registrationWrapper"> <div className ="registerAsVoter" style ={{textAlign:"center"}}>
       <p>Disclaimer</p>
-      <p>If you'd like to participate in voting your favourite candidate, you must first register as a voter.
+      <p>If you'd like to participate in voting or run as a candidate, you must first register as a participant.
       </p>
       <div className="registrationImage"><img src={require('./Images/Votingregistration.png')} alt="snow" className="registrationImg"/></div>
       
       <TransactionButton
-         readyText='Register As Voter' 
+         readyText='Register As Participant' 
          method={() => snowFlake.methods.addResolver(electionAddress,true,web3.utils.toWei('5000000000000000000000'),0x00)}           
           />
      
@@ -87,7 +87,7 @@ export default function Registration({ ein,electionABI, electionAddress,account}
 
 <div className ="registerAsVoter" style ={{textAlign:"center"}}> 
 <p>Disclaimer</p>
-<p>You can register as a candidate if you think you are qualified to lead or take a position for an organization.
+<p>if you are a participant, you can register as a candidate if you think you are qualified to lead or take a position for an organization.
 </p>
 <div className="registrationImage"><img src={require('./Images/candidatesImage.png')} alt="snow" className="registrationImg"/></div>
 

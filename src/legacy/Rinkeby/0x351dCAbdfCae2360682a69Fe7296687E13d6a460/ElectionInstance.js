@@ -55,7 +55,6 @@ export default class ElectionFactory extends Component {
 	}
 
     async loadBlockchain(){
-        console.log("Checksss",this.props.Address)
     
         const ApiKey='ZPRBBU2E6Z4QMEXPI7BWMCMVK7I6XZ6ZXE';
             fetch('https://api-rinkeby.etherscan.io/api?module=contract&action=getsourcecode&address='+this.props.Address+'&apikey='+ApiKey)

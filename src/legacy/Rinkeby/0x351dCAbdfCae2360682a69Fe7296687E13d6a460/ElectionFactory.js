@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 import React, { Component } from 'react';
 import { Bar } from 'react-chartjs-2';
 import Web3 from 'web3';
@@ -38,7 +40,6 @@ export default class ElectionFactory extends Component {
 	constructor(props) {
         super(props)
 			this.state = {
-            exampleItems:['1','2','3','5,'],
             electionFactory:'',
             electionContracts:[],
             raindrop:'',
