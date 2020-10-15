@@ -62,6 +62,7 @@ export default class ChartPage extends Component {
         const network = await web3.eth.net.getNetworkType();
         const accounts = await web3.eth.getAccounts();
         const blockNumber = await web3.eth.getBlockNumber();
+        
         if (this._isMounted){
         this.setState({blockNumber:blockNumber - 1});
         }
@@ -165,7 +166,7 @@ export default class ChartPage extends Component {
         gradient.addColorStop(1, 'rgb(86, 152, 206)');
      
         return {
-        //labels: ['hello','ch'],
+    
          labels: this.state.maxCandidates.map((ein,index)=>["EIN:"+ein+' - '+this.state.userName[index]]),
           datasets: [{
             label:'VOTES',
@@ -234,7 +235,9 @@ export default class ChartPage extends Component {
               
 			<div>
 				</div>
+
                 <div style={{display:'inline-block',textAlign:'center',width: '100%'}} className="divButtons">        
+                
                 {!this.state.loading &&<select className="selectOptions" onChange={this.handleChangeCandidate}>
                 {this.state.maxCandidates.map((candidate,index)=><option key={index} 
                     value={candidate} 

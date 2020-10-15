@@ -2,21 +2,12 @@
 
 
 import React, { Component } from 'react';
-import { Bar } from 'react-chartjs-2';
 import Web3 from 'web3';
 import './style.css';
-import VoteButton from './customButton/VoteButton';
-import clientRaindrop from '../../../services/contracts/clientRaindrop';
-import abi from'./abi';
-import FactoryAbi from './FactoryAbi';
-import ElectionInstance from './ElectionInstance';
-import { get } from 'jquery';
-import VotingDapp from './VotingDapp';
 import Registration from './Registration';
 import VerificationPage from './VerificationPage';
 import ChartPage from './ChartPage';
 import ProfilePage from './ProfilePage';
-import NewElection from './NewElection';
 
 export default class ElectionFactory extends Component {
 
@@ -24,28 +15,11 @@ export default class ElectionFactory extends Component {
 	constructor(props) {
 		super(props)
 			this.state = {
-            electionFactory:'',
             electionABI:[],
-            title:null,
-            page:1,
-            subPage:1,
-
-            account:[],
-
-
-            raindrop:'',
-            maxCandidates:[],
-            votes:[],
-            userName:[],
             accounts:[],
-            blockNumber:'',
-            candidate:'',
-            blocks:600000,
-
-            loading:true,
-            
+            blockNumber:'',       
         }
-       // this.handleChangeCandidate = this.handleChangeCandidate.bind(this)
+       
 	}
 
 

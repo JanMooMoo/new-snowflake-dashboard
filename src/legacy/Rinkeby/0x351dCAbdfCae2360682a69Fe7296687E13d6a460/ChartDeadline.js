@@ -32,7 +32,6 @@ class ChartDeadline extends Component {
         const minutes = await Math.floor((time/1000/60) %60);
         const hours = await Math.floor(time/(1000*60*60) %24);
         const days = await Math.floor(time/(1000*60*60*24));
-        //console.log(this.props.event_unix,'days',  days, 'hours', hours, 'minutes', minutes, 'seconds',seconds );
         this.setState({days,hours,minutes,seconds,dateNow});}
     }
     
@@ -42,7 +41,7 @@ class ChartDeadline extends Component {
     
     render() {
      
-     if(this.props.unixTime < this.state.dateNow)
+     if(this.props.unixTime < this.state.dateNow || isNaN(this.state.seconds))
         return(           
             <p className="deadlineInfo ml-2">Election is closed</p>);
                                              

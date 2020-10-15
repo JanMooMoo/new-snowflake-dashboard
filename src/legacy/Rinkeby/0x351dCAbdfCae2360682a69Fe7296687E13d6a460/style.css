@@ -6,12 +6,17 @@
     font-size: 1.2rem;
     border-radius: 5px!important;
     height:560px;
+    overflow:hidden;
 }
 
 .rows {
   margin: 0px 0px;
   width:100%;
 
+}
+
+.hidden{
+  visibility: hidden!important;
 }
 
 
@@ -24,8 +29,8 @@
 
 .columns {
   float: left;
-  width: 33%;
-  padding: 0 10px;
+  width: 50%;
+  padding: 0 30px;
   margin-top:-5px;
 }
 
@@ -39,10 +44,10 @@
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2); /* this adds the "card" effect */
     text-align: center;
   
-    margin-top:15px;
+    margin-top:20px;
     margin-bottom:15px;
     overflow:hidden;
-    height:175px!important;
+    height:185px!important;
     max-height:215px!important;
     cursor:pointer;
     background: #061b2f;
@@ -251,12 +256,12 @@ font-size: 20px;
 
 .selectOptions{
     font-size: 20px;
-    padding:5px;
+ 
     color:rgb(94, 94, 94);
     border-radius:7px;
     height:35px!important;
     margin-right:20px;
-    margin-top:12px;
+    margin-top:30px;
 }
 
 .daysOptions{

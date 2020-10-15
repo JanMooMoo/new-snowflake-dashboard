@@ -1,40 +1,22 @@
 /* eslint-disable */
 
-import React, { useState, useContext,useEffect} from 'react';
+import React, { useState, useContext} from 'react';
 
 import './style.css';
 import { useGenericContract, useNamedContract, useAccountEffect} from '../../common/hooks';
-import Typewriter from './Typewriter';
 import { useWeb3Context } from 'web3-react';
 import Identicon from '../../../components/identicon';
 import Hydrosmall from './Images/Hydrosmall.png';
 import SnowflakeContext from '../../../contexts/snowflakeContext';
-import {
-  Nav,
-  NavItem,
-  NavLink,
-  Button,
-  Badge,
-} from 'reactstrap';
-import {
-  NavLink as RouterNavLink,
-} from 'react-router-dom';
+import { NavLink } from 'reactstrap';
+import { NavLink as RouterNavLink} from 'react-router-dom';
 
-import {
-  getBalanceUsd,
-} from '../../../services/hydroPrice';
 
 import {
   fromWei,
   formatAmount,
 } from '../../../services/format';
 import numeral from 'numeral';
-import electionFactoryAbi from './FactoryAbi';
-
-
-let loading = true;
-
-
 
 export default function ProfilePage({electionABI,electionAddress,ein,goToVoting,}) {
 
@@ -43,7 +25,6 @@ export default function ProfilePage({electionABI,electionAddress,ein,goToVoting,
 
   const clientRaindropContract = useNamedContract('clientRaindrop')
   const snowflakeContext = useContext(SnowflakeContext);
-  const operatorAddress = '0x7Df28F6007f09f30f0dF0457d54eF950baB0De5D';
   const resolverContract = useGenericContract(electionAddress, electionABI);
 
   
@@ -58,9 +39,6 @@ export default function ProfilePage({electionABI,electionAddress,ein,goToVoting,
   const [voter, voterRegistration]  = useState('')
   const [candidate, candidateRegistration]  = useState('')
 
-  const [lookupEinCandidate, setLookupEinCandidate]  = useState('')
-
-
   const snowflakeBalanceForNumeral = formatAmount(fromWei(snowflakeBalance.toString()));
   const numeralSnowflakeBalance = numeral(snowflakeBalanceForNumeral).format('0,0');
  
@@ -71,20 +49,6 @@ export default function ProfilePage({electionABI,electionAddress,ein,goToVoting,
     resolverContract.methods.aCandidate(ein).call().then(result =>{ result === true? candidateRegistration(true):candidateRegistration(false)})
     
   })
-
-
-  function checkCandidate () {  
-    loadingCandidate = true;
-    resolverContract.methods.aCandidate(lookupEinCandidate).call()
-    .then(result =>{
-      colorResult2(result)
-        result === false?
-          einCandidateResult(["EIN-", lookupEinCandidate, " is not a registered candidate."]) : 
-          einCandidateResult(["EIN-", lookupEinCandidate, " is a registered candidate."])});
-      
-          setTimeout(()=>{loadingCandidate = false}, 3000);
-  }
-
 
   return (
     

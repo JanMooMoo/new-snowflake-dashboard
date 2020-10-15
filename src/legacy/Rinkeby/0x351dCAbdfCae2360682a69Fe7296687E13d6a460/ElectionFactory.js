@@ -1,12 +1,9 @@
 /* eslint-disable */
 
 import React, { Component } from 'react';
-import { Bar } from 'react-chartjs-2';
 import Web3 from 'web3';
 import './style.css';
-import VoteButton from './customButton/VoteButton';
 import clientRaindrop from '../../../services/contracts/clientRaindrop';
-import abi from'./abi';
 import FactoryAbi from './FactoryAbi';
 import ElectionInstance from './ElectionInstance';
 import NewElection from './NewElection';
@@ -17,7 +14,7 @@ import JwPagination from 'jw-react-pagination';
 const customStyles = {
     ul: {
         border:'rgb(10, 53, 88)',
-        background:'rgb(10, 53, 88)'
+        background:'rgb(10, 53, 88)',
         
     },
     li: {
@@ -43,19 +40,10 @@ export default class ElectionFactory extends Component {
             electionFactory:'',
             electionContracts:[],
             raindrop:'',
-            maxCandidates:[],
-            votes:[],
-            userName:[],
-            accounts:[],
-            blockNumber:'',
-            candidate:'',
-            blocks:600000,
-
             loading:true,
             page:1,
             subPage:1,
             set:[],
-
             address:null,
             id:null,
             ein:null,
@@ -63,7 +51,6 @@ export default class ElectionFactory extends Component {
             
             
         }
-       // this.handleChangeCandidate = this.handleChangeCandidate.bind(this)
        this.onChangePage = this.onChangePage.bind(this);
 	}
 
@@ -82,7 +69,7 @@ export default class ElectionFactory extends Component {
         fetch('https://api-rinkeby.etherscan.io/api?module=contract&action=getsourcecode&address=0x351dCAbdfCae2360682a69Fe7296687E13d6a460&apikey='+ApiKey)
         .then(res =>res.json())
         .then((data)=>{
-            console.log(data.result[0])
+            console.log()
         })
 
 
@@ -111,7 +98,7 @@ export default class ElectionFactory extends Component {
         .then(events=>{
             var newest = events;
             var newsort= newest.concat().sort((a,b)=> b.blockNumber- a.blockNumber);
-            console.log(newsort.blockNumber)
+ 
             if (this._isMounted){
             this.setState({electionContracts:newsort,loading:false},()=>console.log());}
             })
@@ -133,7 +120,6 @@ export default class ElectionFactory extends Component {
         this.setState({loading:false})
         this.setState({ pageOfItems,loading:true});
         setTimeout(()=>this.setState({loading:false}),1000)
-        //this.setState({loading:true})
 	}
     
 
@@ -187,6 +173,12 @@ export default class ElectionFactory extends Component {
 
   render() {
 
+    let custom = '';
+
+    if (this.state.loading || this.state.page === 1 && this.state.subPage === 2 || this.state.page === 2){
+        custom = 'hidden';
+    }
+
     let navBar = <ul className="voting-navbar align-items-center" style={{alignItems:'center'}}>
                 <li className="nav-item" onClick={this.electionList}>Election</li>
                 <li className="nav-item ml-5" onClick={this.createElectionPage}>Create Election</li>
@@ -210,20 +202,24 @@ export default class ElectionFactory extends Component {
              
                  <div className="background">
                 {navBar}
-                 {this.state.loading &&<div className="spinner"/>} 
+                
+                {this.state.loading && <div style={{width: '100%',textAlign:'center'}} >
+                <div className="spinner"/></div> } 
 
 
                 {this.state.page === 1 && this.state.subPage === 1 && !this.state.loading &&<div className="rows">
                 
                 {this.state.pageOfItems.map((contracts,index)=>(
-                    <div className="columns"onClick={()=>this.setPage(contracts.returnValues._deployedAddress, contracts.returnValues._id, this.props.ein, this.state.subPage)} >
-                      <ElectionCards key = {index} Address = {contracts.returnValues._deployedAddress} ID={contracts.returnValues._id} ein={this.props.ein} />
+                    <div className="columns"onClick={()=>this.setPage(contracts.returnValues._deployedAddress, contracts.returnValues._id, this.props.ein, this.state.subPage)} key = {index} >
+                   <ElectionCards key = {index} Address = {contracts.returnValues._deployedAddress} ID={contracts.returnValues._id} ein={this.props.ein} />
                       </div>))}</div>}
 
                 {this.state.page === 1 && this.state.subPage === 2 && <NewElection/>}
                       
                 {this.state.page === 2 &&<div><ElectionInstance  Address = {this.state.address} ID={this.state.id} ein={this.state.ein} subPage={this.state.subPage}/></div>}
-                <JwPagination items={this.state.electionContracts} onChangePage={this.onChangePage} maxPages={5} pageSize={6} styles={customStyles} />	
+               
+                <div className={custom}>  <JwPagination items={this.state.electionContracts} onChangePage={this.onChangePage} maxPages={5} pageSize={4} styles={customStyles} /></div>
+              
 
               
              </div>
