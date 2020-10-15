@@ -107,7 +107,7 @@ export default class ElectionFactory extends Component {
         }
        
         
-        electionFactory.getPastEvents("newElectionCreated",{fromBlock: 0, toBlock:'latest'})
+        electionFactory.getPastEvents("newElectionCreated",{fromBlock: 0, toBlock:this.state.blockNumber})
         .then(events=>{
             console.log("hihi",events)
             var newest = events;
@@ -119,7 +119,7 @@ export default class ElectionFactory extends Component {
             .catch((err)=>console.error(err))
 
 
-        electionFactory.events.newElectionCreated({fromBlock:this.state.blockNumber, toBlock:'latest'})
+        electionFactory.events.newElectionCreated({fromBlock:'latest', toBlock:'latest'})
         .on('data',(log) =>setTimeout(()=> {  
 
         this.setState({electionContracts:[...this.state.electionContracts,log]},()=>console.log("incoming",this.state.electionContracts))    
@@ -133,8 +133,8 @@ export default class ElectionFactory extends Component {
     onChangePage(pageOfItems) {
         this.setState({loading:false})
         this.setState({ pageOfItems,loading:true});
-        setTimeout(()=>this.setState({loading:false}),2000)
-        this.setState({loading:true})
+        setTimeout(()=>this.setState({loading:false}),1000)
+        //this.setState({loading:true})
 	}
     
 
