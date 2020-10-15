@@ -517,7 +517,7 @@ font-weight: 700;
 
   .profile-title{
     font-weight:700;
-    color:#a7c6e6!important; 
+    color:#ffffff!important; 
     -webkit-text-stroke:0.00001px #3433;
       text-shadow:2px 2px 0 black,
               1px 1px 0 #000,
@@ -538,6 +538,7 @@ font-weight: 700;
   .userName{
       font-size: 40px!important;
       font-family: 'Anonymous Pro', monospace!important;
+      color:#f5c263;
       -webkit-text-stroke:0.00001px #3433;
       text-shadow:2px 2px 0 black,
               1px 1px 0 #000,

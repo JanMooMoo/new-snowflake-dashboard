@@ -109,12 +109,11 @@ export default class ElectionFactory extends Component {
         
         electionFactory.getPastEvents("newElectionCreated",{fromBlock: 0, toBlock:this.state.blockNumber})
         .then(events=>{
-            console.log("hihi",events)
             var newest = events;
             var newsort= newest.concat().sort((a,b)=> b.blockNumber- a.blockNumber);
             console.log(newsort.blockNumber)
             if (this._isMounted){
-            this.setState({electionContracts:newsort,loading:false},()=>console.log('checkContracts',this.state.electionContracts));}
+            this.setState({electionContracts:newsort,loading:false},()=>console.log());}
             })
             .catch((err)=>console.error(err))
 
@@ -122,7 +121,7 @@ export default class ElectionFactory extends Component {
         electionFactory.events.newElectionCreated({fromBlock:'latest', toBlock:'latest'})
         .on('data',(log) =>setTimeout(()=> {  
 
-        this.setState({electionContracts:[...this.state.electionContracts,log]},()=>console.log("incoming",this.state.electionContracts))    
+        this.setState({electionContracts:[...this.state.electionContracts,log]},()=>console.log())    
         var newest = this.state.electionContracts;
         var newsort= newest.concat().sort((a,b)=> b.blockNumber- a.blockNumber);    
         this.setState({electionContracts:newsort});      
@@ -183,7 +182,6 @@ export default class ElectionFactory extends Component {
     if(address !== null && id !== null & ein !== null){
     this.setState({address:address,id:id,ein:ein},()=>this.pollPage());
     }
-    //this.setState({set:<ElectionInstance  Address = {address} ID={id} ein={ein} subPage={subPage}/>},()=>this.pollPage())
     }
 
 

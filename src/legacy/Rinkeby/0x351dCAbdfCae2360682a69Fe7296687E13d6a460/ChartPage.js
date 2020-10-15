@@ -100,7 +100,7 @@ export default class ChartPage extends Component {
            
         }
         
-        votingContract.events.voted({fromBlock:this.state.blockNumber, toBlock:'latest'})
+        votingContract.events.voted({toBlock:'latest'})
         .on('data',async(log) => {  
    
         const getIndex = (element) => element == parseInt(log.returnValues._candidate);
@@ -113,7 +113,7 @@ export default class ChartPage extends Component {
             
         })
 
-        votingContract.events.becameCandidate({fromBlock:this.state.blockNumber, toBlock:'latest'})
+        votingContract.events.becameCandidate({toBlock:'latest'})
         .on('data',async(event) => { 
             const newCandidate = await raindrop.methods.getDetails(parseInt(event.returnValues._candidateEIN)).call();
             this.setState({maxCandidates:[...this.state.maxCandidates,event.returnValues._candidateEIN],
