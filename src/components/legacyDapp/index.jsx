@@ -34,8 +34,9 @@ import {
 } from '../../legacy/Rinkeby/0xCCB4Ea50F4e4C3f5db8457B575E5Eb498ed7F242/index';
 
 import {
-  Votes,
-} from '../../legacy/Rinkeby/0x7Df28F6007f09f30f0dF0457d54eF950baB0De5D/index';
+  ElectionFactory,
+} from '../../legacy/Rinkeby/0x351dCAbdfCae2360682a69Fe7296687E13d6a460/index';
+
 
 
 function LegacyDapp(props) {
@@ -66,8 +67,8 @@ function LegacyDapp(props) {
       return <WhatOptionYouPreferView2 ein={ein} />;
     }
 
-    if (id === '0x7Df28F6007f09f30f0dF0457d54eF950baB0De5D') {
-      return <Votes ein={ein} />;
+    if (id === '0x351dCAbdfCae2360682a69Fe7296687E13d6a460') {
+      return <ElectionFactory ein={ein} />;
     }
     
     return <Status ein={ein} />;

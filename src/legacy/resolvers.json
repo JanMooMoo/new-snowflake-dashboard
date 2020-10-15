@@ -18,10 +18,10 @@
 		"category": "Entertainment",
 		"price": "10000000000000000000" 
 	},
-	"0x7Df28F6007f09f30f0dF0457d54eF950baB0De5D":{
-		"title":"Voting",
-		"category":"Community",
-		"price":"5000"
+	"0x351dCAbdfCae2360682a69Fe7296687E13d6a460": {
+		"title": "Voteum",
+		"category": "Under Development",
+		"price": "2000"
 	}
 	
 }
