@@ -37,7 +37,9 @@ import {
   ElectionFactory,
 } from '../../legacy/Rinkeby/0x351dCAbdfCae2360682a69Fe7296687E13d6a460/index';
 
-
+import {
+  CharityFactory,
+} from '../../legacy/Rinkeby/0x670D0b90fBf8716F9e9315D20B12D8b735ee039D/index';
 
 function LegacyDapp(props) {
   const user = useContext(SnowflakeContext);
@@ -69,6 +71,10 @@ function LegacyDapp(props) {
 
     if (id === '0x351dCAbdfCae2360682a69Fe7296687E13d6a460') {
       return <ElectionFactory ein={ein} />;
+    }
+
+    if (id === '0x670D0b90fBf8716F9e9315D20B12D8b735ee039D') {
+      return <CharityFactory ein={ein} />;
     }
     
     return <Status ein={ein} />;

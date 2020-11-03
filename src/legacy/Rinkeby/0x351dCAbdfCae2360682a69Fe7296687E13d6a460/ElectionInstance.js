@@ -9,7 +9,7 @@ import VerificationPage from './VerificationPage';
 import ChartPage from './ChartPage';
 import ProfilePage from './ProfilePage';
 
-export default class ElectionFactory extends Component {
+export default class ElectionInstance extends Component {
 
 
 	constructor(props) {
