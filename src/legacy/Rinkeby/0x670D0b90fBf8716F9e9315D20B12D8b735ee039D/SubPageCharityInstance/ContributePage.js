@@ -8,6 +8,7 @@ import ContributeButton from '../Buttons/ContributeButton';
 import Deadline from '../Useable/Deadline';
 import {Doughnut} from 'react-chartjs-2';
 
+
 //Numerical Setting
 let numeral = require('numeral');
 
@@ -166,6 +167,9 @@ export default class ContributePage extends Component {
             .on('data',async(log) => {  
        
             const newRemainingAmount = await charityContract.methods.checkRemainingAmount().call()
+            const updatedBalance = await charityContract.methods.currentBalance().call()
+            this.setState({currentBalance:web3.utils.fromWei(updatedBalance)},()=>console.log());
+     
             if (this._isMounted && web3.utils.fromWei(newRemainingAmount) <= this.state.charityGoal){
               
                 this.setState({remainingAmount:web3.utils.fromWei(newRemainingAmount)},()=>console.log());

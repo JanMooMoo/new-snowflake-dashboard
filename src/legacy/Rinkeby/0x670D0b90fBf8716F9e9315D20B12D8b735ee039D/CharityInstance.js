@@ -19,6 +19,7 @@ export default class CharityInstance extends Component {
             charityContract:[],
             accounts:[],
             blockNumber:'',       
+            title:'',
         }
        
 	}
@@ -52,6 +53,10 @@ export default class CharityInstance extends Component {
  
   render() {    
    let body =  '';
+   let title = this.state.title;
+    if(this.state.title.length > 50){
+        title = this.state.title.slice(0,50) + '...';
+    }
 
         /*Renders the page according to the user*/
         if(this.props.subPage === 2){
@@ -95,8 +100,8 @@ export default class CharityInstance extends Component {
     return (
         
         <div style={{width: '100%',textAlign:'center'}}>
-            <ul className="charity-navbar align-items-center" style={{alignItems:'center'}}>
-                <li className="nav-item" onClick={this.factoryPage}> Title: {this.state.title} </li>
+            <ul className="charity-navbar align-items-center" style={{alignItems:'center'}} title={this.state.title}>
+                <li className="nav-item" onClick={this.factoryPage}> {title} </li>
             </ul>
 
             {body}

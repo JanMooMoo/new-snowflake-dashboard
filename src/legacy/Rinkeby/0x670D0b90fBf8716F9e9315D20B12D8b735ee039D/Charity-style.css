@@ -1,27 +1,23 @@
 @import url(https://fonts.googleapis.com/css?family=Anonymous+Pro);
 
 .Charity-background{
-    color: white!important;
-    background:#061b2f;
-    background:#17548d;
-    background:linear-gradient(to bottom,#647291,rgb(0, 0, 5));
-    background:linear-gradient(to left,rgb(2, 2, 3),rgb(24, 65, 141),rgb(2, 3, 3));
-    font-size: 1.2rem;
-    border-radius: 5px!important;
-    height:560px;
-    overflow:hidden;
-    text-shadow:2px 2px 0 black,
-        1px 1px 0 #000,
-        1px 1px 0 #000,
-        1px 1px 0 #000,
-        2px 1px 0 #000;
+  color: white!important;
+  background:linear-gradient(to left,rgb(2, 2, 3),rgb(24, 65, 141),rgb(2, 3, 3));
+  font-size: 1.2rem;
+  border-radius: 5px!important;
+  height:560px;
+  overflow:hidden;
+  text-shadow:2px 2px 0 black,
+    1px 1px 0 #000,
+    1px 1px 0 #000,
+    1px 1px 0 #000,
+    2px 1px 0 #000;
 }
 
 .rows {
   margin: 0px 0px;
   width:100%;
   height:430px;
-
 }
 
 
@@ -51,7 +47,7 @@
 
 .charity-navbar li{
   display: inline-block;
-  color:rgb(252, 252, 252);
+  color:rgb(243, 193, 77);
   cursor:pointer;
   text-align: center;
   text-transform: uppercase;
@@ -106,33 +102,29 @@
   font-weight: 700;
   }
   
-  .charity-menu li{
-      display: inline-block;
-      color:white;
-      cursor:pointer;
-      text-align: center;
-      box-shadow:5px 10px 15px rgb(10, 10, 10);
+.charity-menu li{
+  display: inline-block;
+  color:white;
+  cursor:pointer;
+  text-align: center;
+  box-shadow:5px 10px 15px rgb(10, 10, 10);
   }
   
-  .charity-menu li:hover{
-      cursor:pointer;
-      color:rgb(243, 193, 77);
-      box-shadow:2px 0px 5px rgb(10, 10, 10);
-
+.charity-menu li:hover{
+  cursor:pointer;
+  color:rgb(243, 193, 77);
+  box-shadow:2px 0px 5px rgb(10, 10, 10);
   }
 
 .charityPage-columns{
-    float: left;
-    width: 25%;
-    padding: 0 30px;
-    margin-top:-5px;  
+  float: left;
+  width: 25%;
+  padding: 0 30px;
+  margin-top:-5px;  
 }
-
 
 .charityInstance-Box{
   border:1px solid white;
-  background:linear-gradient(to top,rgb(13, 110, 116),rgb(3, 49, 51));
-  background:linear-gradient(30deg,rgb(13, 110, 116),rgb(228, 195, 235));
   background:linear-gradient(30deg,rgb(2, 3, 3),rgb(24, 65, 141));
   border-radius:10px;
   height:30%;
@@ -158,8 +150,6 @@
 
 .fontIcon{
   font-size: 3rem;
-
-
 }
 
 .donationImg{
@@ -608,7 +598,6 @@
   position:relative;
   width:100%;
   height:2.7em;
-  background: #404b70;
   background:transparent;
   border-radius:1.4em;
   color:white;
@@ -740,14 +729,7 @@
 
 .charityProfile{
   border:1px solid rgb(172, 137, 41);
-  background:linear-gradient(40deg,rgb(16, 25, 54),#b6c6d4);
-  
-  backgrdound:linear-gradient(40deg,#0b4980,rgb(150, 47, 141));
-  background:linear-gradient(40deg,rgb(16, 25, 54),#43627c);
   background:rgb(5, 13, 43);
-  backdground:linear-gradient(40deg,rgb(118, 12, 160),#e75581,rgb(11, 255, 243));
-  backgdround:linear-gradient(50deg,#fad55c,rgb(116, 41, 160));
-  backgdround:linear-gradient(45deg,rgb(0, 0, 5),#8f4884,rgb(0, 0, 5));
   color:rgb(253, 253, 253);
   margin:20px;
   border-radius:10px;
@@ -767,7 +749,6 @@
   border-radius:7px;
   box-shadow:5px 0 8px rgb(10, 10, 10);
   padding: 4px;
-  background:linear-gradient(40deg,rgb(238, 226, 56),#e75581,rgb(11, 255, 243));  
   background:linear-gradient(40deg,rgb(87, 8, 139),rgb(9, 189, 180));
   
 }
@@ -922,10 +903,7 @@
 .registerIcon{
   font-size: 5rem;
   color:#ffffff;
-  background:rgb(236, 233, 233);
-  background:linear-gradient(40deg,rgb(238, 226, 59),#e75581,rgb(11, 255, 243));
   background:linear-gradient(40deg,rgb(134, 13, 214),rgb(11, 255, 243));
-
   width:150px;
   margin-bottom:50px;
   margin-left:35%;
@@ -943,7 +921,6 @@
 
 .chadrityProfile{
   border:1px solid #cea430;
-  background:linear-gradient(40deg,rgb(123, 12, 197),rgb(14, 190, 182));
   background:rgb(5, 13, 43);
   color:rgb(253, 253, 253);
   margin:20px;
@@ -976,7 +953,6 @@
 .table-wrapper{
   margin-top:-10px;
   padding-top:5px;
-  background:rgba(0, 0, 0, 0.301);
   background: transparent;
   font-size:0.9rem;
   border-top: none;

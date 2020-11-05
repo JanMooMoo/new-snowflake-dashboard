@@ -6,7 +6,7 @@ import CharityContractABI from '../ABI/CharityContractABI';
 import { useGenericContract,useAccountEffect } from '../../../common/hooks';
 import ContributeButton from '../Buttons/ContributeButton';
 import { useWeb3Context } from 'web3-react';
-import {rinkeby1484_ABI, rinkeby1484_Address} from '../ABI/SnowflakeABI';
+import {snowflake_ABI, snowflake_Address} from '../ABI/SnowflakeABI';
 import numeral from 'numeral';
 import hydro from '../Images/hydro.png';
 import {
@@ -21,7 +21,7 @@ export default function RegistrationPage({ ein,Address,subPageMenu}) {
 
   /*Sets the Charity Contract Data*/
   const resolverContract = useGenericContract(Address, CharityContractABI);
-  const snowFlake = useGenericContract(rinkeby1484_Address, rinkeby1484_ABI);
+  const snowFlake = useGenericContract(snowflake_Address, snowflake_ABI);
   const web3 = new Web3(new Web3.providers.WebsocketProvider('wss://rinkeby.infura.io/ws/v3/72e114745bbf4822b987489c119f858b'));  
   const [title, charityTitle]  = useState('');
   const [goal, charityGoal]  = useState('');

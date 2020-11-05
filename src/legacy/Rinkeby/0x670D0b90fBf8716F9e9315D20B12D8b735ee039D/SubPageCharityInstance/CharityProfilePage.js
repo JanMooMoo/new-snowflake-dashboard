@@ -30,12 +30,13 @@ export default function CharityProfilePage({Address,ein,subPageMenu,}) {
     snowflakeBalance,
   } = snowflakeContext;
 
+  
   /* Sets the data from client Raindrop & charity contract */
   const [userName, einUser]  = useState('')
   const [linkedAddress, EthUser]  = useState('  ')
   const [voter, voterRegistration]  = useState('')
   const [contributions, totalContributions]  = useState('')
-
+  
   const snowflakeBalanceForNumeral = formatAmount(fromWei(snowflakeBalance.toString()));
   const numeralSnowflakeBalance = numeral(snowflakeBalanceForNumeral).format('0,0');
   const numeralContributions = numeral(contributions).format('0,0');
