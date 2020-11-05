@@ -6,10 +6,6 @@ import { useWeb3Context } from 'web3-react';
 import CharityFactoryABI from '../ABI/CharityFactoryABI';
 import CreateCharityButton from '../Buttons/CreateCharityButton';
 import logo from '../logo.png'
-import hydro from '../Images/hydro.png'
-//import VoteButton from './customButton/VoteButton';
-
-let numeral = require('numeral');
 
 export default function CreateCharity({account}) {
 
@@ -30,8 +26,6 @@ export default function CreateCharity({account}) {
   
   return (
     
-
-
     <div className="profileWrapper"  style ={{textAlign:"center"}}>  
 
     <div className ="charityProfile" style ={{textAlign:"center"}}>

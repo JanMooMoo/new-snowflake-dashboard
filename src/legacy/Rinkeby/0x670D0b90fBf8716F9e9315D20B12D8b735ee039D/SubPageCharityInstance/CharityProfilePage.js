@@ -10,8 +10,6 @@ import SnowflakeContext from '../../../../contexts/snowflakeContext';
 import { NavLink } from 'reactstrap';
 import { NavLink as RouterNavLink} from 'react-router-dom';
 import CharityContractABI from '../ABI/CharityContractABI';
-import ContributeButton from '../Buttons/ContributeButton';
-
 
 import {
   fromWei,
@@ -21,21 +19,18 @@ import numeral from 'numeral';
 
 
 export default function CharityProfilePage({Address,ein,subPageMenu,}) {
-
-  
+ 
   const context = useWeb3Context();
 
   const clientRaindropContract = useNamedContract('clientRaindrop')
   const snowflakeContext = useContext(SnowflakeContext);
   const resolverContract = useGenericContract(Address, CharityContractABI);
 
-  
-
   const {
     snowflakeBalance,
   } = snowflakeContext;
 
-
+  /* Sets the data from client Raindrop & charity contract */
   const [userName, einUser]  = useState('')
   const [linkedAddress, EthUser]  = useState('  ')
   const [voter, voterRegistration]  = useState('')
@@ -44,7 +39,9 @@ export default function CharityProfilePage({Address,ein,subPageMenu,}) {
   const snowflakeBalanceForNumeral = formatAmount(fromWei(snowflakeBalance.toString()));
   const numeralSnowflakeBalance = numeral(snowflakeBalanceForNumeral).format('0,0');
   const numeralContributions = numeral(contributions).format('0,0');
+  /*END*/
  
+  /*Get user data from client Raindrop Contract & Charity Contract*/
   useAccountEffect(() => {
     
     clientRaindropContract.methods.getDetails(ein).call().then(user => {einUser(user[1]), EthUser(user[0])});
@@ -52,10 +49,10 @@ export default function CharityProfilePage({Address,ein,subPageMenu,}) {
     resolverContract.methods.contributions(ein).call().then(result =>{ totalContributions(formatAmount(fromWei(result).toString()))})
     
   })
+   /*END*/
 
   return (
     
-  
         <div style ={{textAlign:"center"}}>   
     
         <div className="profileWrapper">   
@@ -66,16 +63,12 @@ export default function CharityProfilePage({Address,ein,subPageMenu,}) {
 
 
         <div className="profileBox" >
-        <Identicon seed={ein} size={250} />
-        
-        
-          </div>
+        <Identicon seed={ein} size={250}/>
+        </div>
          
         <div className="profileInfo">
         <li className="profileNumber">Ethereum Identity No.: <NavLink className ="customNav" style={{color:"white"}} title="Manage Identity" tag={RouterNavLink} exact to="/identity"> {ein}</NavLink  ></li>
-         
-
-         
+           
         <li className="profileNumber">Registration: 
         {voter? <li style={{color:"white"}} title="Unregistered">Registered</li> : <li style={{color:"white"}} title="Unregistered">Unregistered</li>} 
         </li>
@@ -84,8 +77,7 @@ export default function CharityProfilePage({Address,ein,subPageMenu,}) {
         <li className="profileNumber">Linked Address: <a href={"https://rinkeby.etherscan.io/address/"+ linkedAddress} target="blank" style={{color:"white"}} title={linkedAddress}> {linkedAddress.slice(0,5)+"..."}</a></li>
 
         </div>
-  
-       
+     
     </div>
     </div>
     <button readyText='Go Back'className="txButton" onClick={subPageMenu} width={500}> Go Back </button>

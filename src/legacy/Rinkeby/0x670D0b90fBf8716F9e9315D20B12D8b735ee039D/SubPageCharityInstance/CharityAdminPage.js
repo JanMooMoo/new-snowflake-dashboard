@@ -1,13 +1,11 @@
 /* eslint-disable */
 
-import React, { useState, useContext}  from 'react';
-import Web3 from 'web3';
+import React, { useState }  from 'react';
 import CharityContractABI from '../ABI/CharityContractABI';
-import { useGenericContract, useNamedContract,useAccountEffect } from '../../../common/hooks';
-import TransactionButton from '../../../common/TransactionButton';
+import { useGenericContract,useAccountEffect } from '../../../common/hooks';
 import ContributeButton from '../Buttons/ContributeButton';
 import { useWeb3Context } from 'web3-react';
-import {rinkeby1484_ABI, rinkeby1484_Address} from '../ABI/SnowflakeABI';
+import CharityFactoryABI from '../ABI/CharityFactoryABI';
 import {
   fromWei,
   formatAmount,
@@ -16,41 +14,43 @@ import numeral from 'numeral';
 import hydro from '../Images/hydro.png';
 
 
-export default function CharityAdminPage({ ein,account, Address,subPageMenu}) {
+export default function CharityAdminPage({account, Address,subPageMenu}) {
 
   
   const context = useWeb3Context();
 
   const resolverContract = useGenericContract(Address, CharityContractABI);
-  const snowFlake = useGenericContract(rinkeby1484_Address, rinkeby1484_ABI);
-  const web3 = new Web3(new Web3.providers.WebsocketProvider('wss://rinkeby.infura.io/ws/v3/72e114745bbf4822b987489c119f858b'));  
+  const charityFactory = useGenericContract('0xf80Cd09e8851366dB17Ad7f14C7b573D8EcbCCDd', CharityFactoryABI);
+
+  /*Sets the data from charity*/
   const [title, charityTitle]  = useState('');
   const [goal, charityGoal]  = useState('');
   const [balance, charityBalance]  = useState('');
-  const [time, timeRemaining]  = useState('');
   const [description, charityDescription]  = useState('');
   const [admin,overLord] = useState('');
   const [status,contractStatus] = useState('');
+  const [ethAddress,newAdmin] = useState('');
+  /*END*/
 
 
-
+  /*Convert numerical format from wei to numeral*/
   const goalFormat = formatAmount(fromWei(goal.toString()));
   const balanceFormat = formatAmount(fromWei(balance.toString()));
   const numeralGoal = numeral(goalFormat).format('0,0');
   const numeralBalance = numeral(balanceFormat).format('0,0');
+  /*END*/
 
+
+  /*Gets the Charity Data for Administrator*/
   useAccountEffect(() => {
-    
-    //clientRaindropContract.methods.getDetails(ein).call().then(user => {einUser(user[1]), EthUser(user[0])});
     resolverContract.methods.title().call().then(result =>{charityTitle(result)}); 
     resolverContract.methods.charityGoal().call().then(result =>{charityGoal(result)});   
-    resolverContract.methods.checkRemainingTime().call().then(result =>{timeRemaining(result)}); 
     resolverContract.methods.description().call().then(result =>{charityDescription(result)});
     resolverContract.methods.currentBalance().call().then(result =>{charityBalance(result)}); 
     resolverContract.methods.overlord().call().then(result =>{overLord(result)});
-    resolverContract.methods.checkState().call().then(result =>{contractStatus(result)});
-    
+    resolverContract.methods.checkState().call().then(result =>{contractStatus(result)});  
   });
+  /*END*/
   
   let charityState = '';
   if(parseInt(status) === 1){
@@ -71,35 +71,51 @@ export default function CharityAdminPage({ ein,account, Address,subPageMenu}) {
       <div className="registrationWrapper-charity"> 
       <div className ="registerAsContributor-card" style ={{textAlign:"center"}}>
       
-      <div className="registrationImage"><img src={require('../logo.png')} alt="Logo" className="charityLogo mb-2 mr-1" width={230}/></div>
-
+      <div className="registrationImage"><img src={require('../logo.png')} alt="Logo" className="charityLogo mb-2" width={230}/></div>
       <p className="mt-2">Charity Title: {title}</p>
-      <p>Charity Status: {charityState}</p>
-      <p>Charity Goal: {numeralGoal} <img src={hydro} className="mb-1 mr-1"  border={1} alt="Hydro logo" width={20}/></p>
-      <p>Funded: {numeralBalance} <img src={hydro} className="mb-1 mr-1"  border={1} alt="Hydro logo" width={20}/></p>
+      <div>Charity Status: <p className={charityState} style={{display:'inline-block'}}>{charityState}</p></div>
+      <p>Charity Goal: {numeralGoal} <img src={hydro} className="hydro-logo mb-1"  border={1} alt="Hydro logo" width={20}/></p>
+      <p>Funded: {numeralBalance} <img src={hydro} className=" hydro-logo mb-1"  border={1} alt="Hydro logo" width={20}/></p>
       <p>Description: {description}</p>
       
     </div>
-   
     <div className ="registerAsContributor-card" style ={{textAlign:"center"}}>
       <div className="registrationImage"><div className="registerIcon" ><i class="fas fa-user-astronaut"/></div></div>
-      <p className="mt-2">The ADMINISTRATOR is entrusted by the community with the power to APPROVE & DISABLE charity contracts, therefore making him/her responsible in maintaining the Charity-Dapp.</p>
+      <p className="mt-2">The administrator is entrusted by the community with the power to Approve & Disable charity contracts, therefore making him/her responsible in maintaining the Charity-Dapp.</p>
       
-      <div className="mt-3"> { account === admin && <ContributeButton
+
+     
+        {account === admin && <div className="form-group row">
+        <div className="group mt-2">
+            <div className="input-group-prepend">
+                <span className="input-group-charity">ETH Address</span>
+            <input className="verify" type="text" min="0"  autoComplete="off"  onChange={e => newAdmin(e.target.value)}/>
+            </div>
+        </div>
+        </div>}
+
+      {account === admin && <div className="mt-1">  <ContributeButton
+      readyText='Transfer Rights' 
+      method={() => charityFactory.methods.transferOverlordAuthority(ethAddress)}/>
+      <label className="newCharityLabel mt-2" style={{fontSize: '12px'}}>Tranfer your admin rights to another Ethereum address.</label>
+      </div>}
+
+      {account === admin && <div className="mt-3"><ContributeButton
       readyText='Approve Charity' 
-      method={() => resolverContract.methods.approveCharity()}/>}
-      </div>
+      method={() => resolverContract.methods.approveCharity()}/>
+      <label className="newCharityLabel mt-2" style={{fontSize: '12px'}}>Approve charity in order for this charity to start receiving funds.</label>
+      </div>}
 
       {account === admin?<div className="mt-3"> <ContributeButton
       readyText='Disable Charity' 
       method={() => resolverContract.methods.disableCharity()}/>
+      <label className="newCharityLabel mt-2" style={{fontSize: '12px'}}>Disable charity in order for this charity to stop receiving funds.</label>
       </div>
       :
-      <div className="mt-5">
+      <div className="mt-4">
            <button className="txButton"> You are not the administrator </button> 
       </div>}
-      
-      
+       
       </div>
 
     </div>

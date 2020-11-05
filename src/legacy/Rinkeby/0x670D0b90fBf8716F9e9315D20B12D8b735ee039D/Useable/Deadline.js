@@ -24,9 +24,10 @@ class Deadline extends Component {
         }
     }
     
+    /*Gets the deadline props from Contribute Component & Converts the timestamp*/
     async getTimeUntil(deadline){
         if (this._isMounted){
-            
+
         const dateTime = Date.now();
         const dateNow = Math.floor(dateTime / 1000);
         const time = await Date.parse(deadline) - Date.parse(new Date());
@@ -44,6 +45,7 @@ class Deadline extends Component {
     
     render() {
 
+    /*Render According to the Status of charity*/
     if (this.props.charityStatus === 1){
         return(           
             <div>Status: Awaiting Approval </div>);
@@ -52,7 +54,7 @@ class Deadline extends Component {
     else if (this.props.charityStatus === 3){
         return(           
             <div className>Status: Disabled</div>);
-        }
+    }
 
     else { 
         if (isNaN(this.state.seconds))    
@@ -65,7 +67,8 @@ class Deadline extends Component {
         else
             return (
                 <div>Time Left: {this.state.days} Days {this.state.hours} hrs {this.state.minutes} min. {this.state.seconds} sec.</div>);
-        }
+    }
+    /*End of dynamic rendering according to the Status of charity*/
     }
 }
 export default Deadline;

@@ -24,6 +24,7 @@ export default class CharityCards extends Component {
             charityGoal:0,
             remainingAmount:0,
             charityStatus:'',
+            loading:true,
                      
         }
       
@@ -36,7 +37,8 @@ export default class CharityCards extends Component {
     }
     
     async loadBlockchain(){
-    
+        this.setState({loading:true})
+
         let ethereum= window.ethereum;
         let web3=window.web3;
 
@@ -68,22 +70,35 @@ export default class CharityCards extends Component {
                 this.setState({title:title},()=>console.log());
             }
 
-            const remainingAmount = await charityContract.methods.checkRemainingAmount().call()
             const charityGoal = await charityContract.methods.charityGoal().call()
             if (this._isMounted){
-                this.setState({charityGoal:web3.utils.fromWei(charityGoal),remainingAmount:web3.utils.fromWei(remainingAmount)},()=>console.log());
+                this.setState({charityGoal:web3.utils.fromWei(charityGoal)},()=>console.log());
             }
-            
+
             const charityStatus = await charityContract.methods.checkState().call()
             const deadline = await charityContract.methods.raiseBy().call()
 
             if (this._isMounted){
                 this.setState({unixTime:deadline.slice(0,10),
                                deadline:new Date(parseInt(deadline,10)*1000),
-                               charityStatus:parseInt(charityStatus)
+                               charityStatus:parseInt(charityStatus),
                 });
             }
-
+            this.setState({loading:false})
+            const remainingAmount = await charityContract.methods.checkRemainingAmount().call()
+            if (this._isMounted && web3.utils.fromWei(remainingAmount) <= this.state.charityGoal){
+                this.setState({remainingAmount:web3.utils.fromWei(remainingAmount)},()=>console.log());
+            }
+          
+            charityContract.events.fundingReceived({toBlock:'latest'})
+            .on('data',async(log) => {  
+       
+            const newRemainingAmount = await charityContract.methods.checkRemainingAmount().call()
+            if (this._isMounted && web3.utils.fromWei(newRemainingAmount) <= this.state.charityGoal){  
+                this.setState({remainingAmount:web3.utils.fromWei(newRemainingAmount)},()=>console.log());
+             }       
+          })
+            
         }
 
 
@@ -92,19 +107,25 @@ export default class CharityCards extends Component {
     if(this.state.charityGoal > 0){
     percentage = numeral((this.state.charityGoal - this.state.remainingAmount)*100/this.state.charityGoal).format('0.00')+ "%";
     }
+    let title = this.state.title;
+    if(this.state.title.length > 35){
+        title = this.state.title.slice(0,35) + '...';
+    }
+    
     return (
         
         <div className="charityCard">
 
-            <h3 className="charity-card-header small">
-            <strong> {this.state.title} </strong>
+            <h3 className="charity-card-header small" title={this.state.title}>
+            <strong> {title} </strong>
             </h3>
 
             <div className="card-list">	
-				<ul className="list-group list-group-flush"> 
-                    <CardDeadline deadline={this.state.deadline} unixTime={this.state.unixTime} charityStatus={this.state.charityStatus}/>
+            {!this.state.loading &&<ul className="list-group list-group-flush"> 
+                   <CardDeadline deadline={this.state.deadline} unixTime={this.state.unixTime} charityStatus={this.state.charityStatus}/>
                     <li className="list-group-charity small"><img src={hydro} className="mb-1 mr-1"  border={1} alt="Hydro logo" width={20}/> {numeral(this.state.charityGoal - this.state.remainingAmount).format('0,00')}/{numeral(this.state.charityGoal).format('0,00')}<div class="progress"><div class="progress-inner" style={{"width":percentage }}></div><div class="progress-outer" style={{"width":"100%" }}></div><p className="  mb-0 text-center">{percentage}</p></div></li>	
-                </ul>
+                </ul>}
+                {this.state.loading &&<div className = "charity-awaiting-approval">Loading...</div>}
 			    </div>          
         
             </div>

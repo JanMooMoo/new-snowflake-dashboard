@@ -1,17 +1,14 @@
 import React, { Component } from 'react';
 import Web3 from 'web3';
 import './Charity-style.css';
-import clientRaindrop from '../../../services/contracts/clientRaindrop';
 import CharityFactoryABI from './ABI/CharityFactoryABI';
 import CharityInstance from './CharityInstance';
 import CharityCards from './SubPageCharityFactory/CharityCards';
 import CreateCharity from './SubPageCharityFactory/CreateCharity';
 
-//import NewElection from './NewElection';
-//import ElectionCards from './ElectionCards';
 import JwPagination from 'jw-react-pagination';
 
-
+/*Style of Pagination*/
 const customStyles = {
     ul: {
         border:'rgb(10, 53, 88)',
@@ -30,7 +27,7 @@ const customStyles = {
 	},
 	
 };
-
+/*End of style of Pagination*/
 
 export default class CharityFactory extends Component {
 
@@ -41,18 +38,13 @@ export default class CharityFactory extends Component {
             charityFactory:[],
             charityAddress:[],
             account:[],
-            raindrop:'',
             loading:true,
             page:1,
             subPage:1,
-            set:[],
             address:null,
-            id:null,
+            blockNumber:'',
             ein:null,
-            pageOfItems:[],
-            sample:['0xEb6C266ee98323e00e1ff1685E71313eFec8bd48','0xEb6C266ee98323e00e1ff1685E71313eFec8bd48','0xEb6C266ee98323e00e1ff1685E71313eFec8bd48','0xEb6C266ee98323e00e1ff1685E71313eFec8bd48','0xEb6C266ee98323e00e1ff1685E71313eFec8bd48','0xEb6C266ee98323e00e1ff1685E71313eFec8bd48','0xEb6C266ee98323e00e1ff1685E71313eFec8bd48']
-            
-            
+            pageOfItems:[],    
         }
        this.onChangePage = this.onChangePage.bind(this);
 	}
@@ -60,11 +52,12 @@ export default class CharityFactory extends Component {
 
 	componentDidMount(){
 	  this._isMounted = true;
-     this.loadBlockchain();
-	}
-
+      this.loadBlockchain();
+    }
+    
+    /*Load Charity Factory Contract*/
     async loadBlockchain(){
-        
+        this.setState({loading:true})
         let ethereum= window.ethereum;
         let web3=window.web3;
 
@@ -86,15 +79,12 @@ export default class CharityFactory extends Component {
         const accounts = await web3.eth.getAccounts();
         const blockNumber = await web3.eth.getBlockNumber();
         if (this._isMounted){
-        this.setState({blockNumber:blockNumber - 1});
+        this.setState({blockNumber:blockNumber});
         }
         if (this._isMounted){
         this.setState({account: accounts[0]}); 
         }
-        const raindrop = new web3.eth.Contract(clientRaindrop.abi,clientRaindrop.address);
-        if (this._isMounted){
-            this.setState({raindrop:raindrop});
-        }
+        
         const charityFactory = new web3.eth.Contract(CharityFactoryABI,'0xf80Cd09e8851366dB17Ad7f14C7b573D8EcbCCDd');
         if (this._isMounted){
             this.setState({charityFactory:charityFactory});
@@ -102,27 +92,31 @@ export default class CharityFactory extends Component {
 
         const charityAddress = await charityFactory.methods.returnAllCharities().call()
         if (this._isMounted){
-           this.setState({charityAddress:charityAddress},()=>console.log(this.state.charityAddress.length))
+           this.setState({charityAddress:charityAddress.reverse()},()=>console.log())
         }
 
         charityFactory.events.newCharityCreated({fromBlock:'latest', toBlock:'latest'})
         .on('data',async(log) => {  
         const incomingCharityAddress = await charityFactory.methods.returnAllCharities().call()
-
-        if (this._isMounted){
-               this.setState({charityAddress:incomingCharityAddress},()=>console.log(this.state.charityAddress.length))}
+        
+               this.setState({charityAddress:incomingCharityAddress.reverse()},()=>console.log(this.state.charityAddress))
         })
+        this.setState({loading:false})
         }
+        /*END OF LOADING CHARITY FACTORY CONTRACT*/
 
+    
+    /*PAGINATION*/
     onChangePage(pageOfItems) {
         this.setState({loading:false})
         this.setState({ pageOfItems,loading:true});
-        setTimeout(()=>this.setState({loading:false}),1000)
+        setTimeout(()=>this.setState({loading:false}),700)
 	}
     
 
     /*NAVIGATE FACTORY PAGE*/
     factoryPage=()=>{
+        this.loadBlockchain()
         this.setState({page:1,subPage:1},()=>console.log())
     }
 
@@ -133,7 +127,7 @@ export default class CharityFactory extends Component {
     charityInstancePage=()=>{
         this.setState({page:2,subPage:1},()=>console.log())
     }
-
+    /*END OF NAVIGATE FACTORY PAGE*/
     
 
     /*NAVIGATE CHARITY PAGE*/
@@ -158,8 +152,12 @@ export default class CharityFactory extends Component {
         this.setState({subPage:5},()=>console.log())
     }
 
+    subPageOverview=()=>{
+        this.setState({subPage:6},()=>console.log())
+    }
+    /*END OF NAVIGATE CHARITY PAGE*/
 
-
+    /*Sets the charity contract addres to load*/
     setPage=(contractAddress,ein)=>{
     if(contractAddress !== null && ein !== null){
     this.setState({address:contractAddress,ein:ein},()=>this.charityInstancePage());
@@ -168,12 +166,11 @@ export default class CharityFactory extends Component {
 
 
   render() {
-
+    /*Hides pagination when the page is not charity page*/
     let custom = '';
     if (this.state.loading || this.state.page === 1 && this.state.subPage === 2 || this.state.page === 2){
         custom = 'hidden';
     }
-
     
     return (
 
@@ -205,14 +202,14 @@ export default class CharityFactory extends Component {
                 subPageRegistration = {this.subPageRegistration}
                 subPageProfile = {this.subPageProfile}
                 subPageAdmin = {this.subPageAdmin}
+                subPageOverview = {this.subPageOverview}
                 subPage = {this.state.subPage}
                 Address = {this.state.address}
                 account={this.state.account}/>
                }
 
-            <div className={custom}>  <JwPagination items={this.state.charityAddress.reverse()} onChangePage={this.onChangePage} maxPages={5} pageSize={4} styles={customStyles} /></div>
-    
-              
+            <div className={custom}>  <JwPagination items={this.state.charityAddress} onChangePage={this.onChangePage} maxPages={5} pageSize={4} styles={customStyles} /></div>
+      
              </div>
             </div>
 		);

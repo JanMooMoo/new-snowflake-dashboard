@@ -2,7 +2,7 @@
 
 import React, { Component } from 'react';
 
-
+/*CARD DEADLINE COMPONENT*/
 class CardDeadline extends Component {
     constructor(props) {
         super(props);
@@ -24,9 +24,9 @@ class CardDeadline extends Component {
         }
     }
     
+    /*Gets the deadline props from CharityCards Component & Converts the timestamp*/
     async getTimeUntil(deadline){
-        if (this._isMounted){
-            
+        if (this._isMounted){   
         const dateTime = Date.now();
         const dateNow = Math.floor(dateTime / 1000);
         const time = await Date.parse(deadline) - Date.parse(new Date());
@@ -43,30 +43,34 @@ class CardDeadline extends Component {
     }
     
     render() {
-     if (this.props.charityStatus === 1){
+    
+    /*Render According to the Status of charity*/
+    if (this.props.charityStatus === 1){
         return(           
         <div className = "charity-awaiting-approval">Status: Awaiting Approval </div>);
-     }
+    }
 
-     else if (this.props.charityStatus === 3){
+    else if (this.props.charityStatus === 3){
         return(           
         <div className = "charity-deadline-close">Status: Disabled</div>);
-     }
+    }
 
     
     else {
-       
-    if (isNaN(this.state.seconds))    
-    return(           
-        <div className = "charity-awaiting-approval">Loading...</div>);
-      
-    else if (this.props.unixTime < this.state.dateNow)
-        return(           
+        if (this.props.unixTime < this.state.dateNow || isNaN(this.state.seconds))
+            return(           
             <div className = "charity-deadline-close">Charity is closed</div>);                                         
-     else
-        return(
-           <div className = "charity-deadline">Time Left: {this.state.days} Days {this.state.hours} hrs {this.state.minutes} min. {this.state.seconds} sec.</div>);
+        
+        if(this.state.days === 0){
+            return(
+           <div className = "charity-deadline">Time Left:{this.state.hours} hrs {this.state.minutes} min. {this.state.seconds} sec.</div>);
         }
+
+        else
+        return(
+           <div className = "charity-deadline">Time Left: {this.state.days} Days {this.state.hours} hrs {this.state.minutes} min.</div>);
+    }
+    /*End of dynamic rendering accorinding to the Status of charity*/
     }
 }
 export default CardDeadline;

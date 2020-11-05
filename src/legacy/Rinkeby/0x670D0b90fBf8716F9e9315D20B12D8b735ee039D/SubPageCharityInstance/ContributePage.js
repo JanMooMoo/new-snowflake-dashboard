@@ -1,5 +1,4 @@
 /* eslint-disable */
-
 import React, { Component } from 'react';
 import Web3 from 'web3';
 import '../Charity-style.css';
@@ -11,37 +10,36 @@ import {Doughnut} from 'react-chartjs-2';
 
 //Numerical Setting
 let numeral = require('numeral');
-//Dougnut Chart Percentage
+
+/*Setting for Dougnut Chart Percentage*/
 var originalDoughnutDraw = Chart.controllers.doughnut.prototype.draw;
-Chart.helpers.extend(Chart.controllers.doughnut.prototype, {
-  draw: function() {
-    originalDoughnutDraw.apply(this, arguments);
-    
-    var chart = this.chart;
-    var width = chart.chart.width,
-        height = chart.chart.height,
-        ctx = chart.chart.ctx;
+  Chart.helpers.extend(Chart.controllers.doughnut.prototype, {
+    draw: function() {
+      originalDoughnutDraw.apply(this, arguments);
+      var chart = this.chart;
+      var width = chart.chart.width,
+          height = chart.chart.height,
+          ctx = chart.chart.ctx;
 
-    var fontSize = 0.9
-    var fontWeight = 700
-    ctx.font = fontSize + "em sans-serif";
-    ctx.textBaseline = "middle";
+      var fontSize = 0.9
+        ctx.font = fontSize + "em sans-serif";
+        ctx.textBaseline = "middle";
 
-	var percentage = 0;
-	
-	var total = chart.config.data.datasets[0].data[0] + chart.config.data.datasets[0].data[1]
-	percentage = numeral(chart.config.data.datasets[0].data[0] *100/total).format('0.00')
-	var text = percentage+'%',
-        textX = Math.round((width - ctx.measureText(text).width) / 2),
-        textY = height / 2.3;
-    var fund =  "Funded",
-		textZ = height / 1.9;
+	    var percentage = 0;
+	    var total = chart.config.data.datasets[0].data[0] + chart.config.data.datasets[0].data[1]
+	      percentage = numeral(chart.config.data.datasets[0].data[0] *100/total).format('0.00')
+	    var text = percentage+'%',
+          textX = Math.round((width - ctx.measureText(text).width) / 2),
+          textY = height / 2.3;
+      var fund =  "Funded",
+		      textZ = height / 1.9;
 		
-    ctx.fillText(text, textX, textY);
-    ctx.fillText(fund, textX, textZ);
+      ctx.fillText(text, textX, textY);
+      ctx.fillText(fund, textX, textZ);
   }
 });
 
+/*End of Doughtnut Chart Percentage*/
 
 
 export default class ContributePage extends Component {
@@ -53,18 +51,18 @@ export default class ContributePage extends Component {
             charityContract:[],
             accounts:[],
             blockNumber:0,
+
             title:null,
             description:null,
             charityGoal:null,
-            remainingAmount:null,
+            remainingAmount:0,
             deadline:null,
             blockNumber:'',  
-            sendTo:'0x33fB358FF64fcEAcEb3220D2b124F6cd4034618D',
-            
             charityStatus:'',
             contractOwner:'',
             contributionAmount:0,
             currentBalance:0,
+            charityExpired:true,
            
             charityOwnerOpen:false,
             descriptionOpen:false,
@@ -77,9 +75,10 @@ export default class ContributePage extends Component {
 
 	componentDidMount(){
 	  this._isMounted = true;
-      this.loadBlockchain();
+    this.loadBlockchain();
 	}
 
+    /*Loads & Sets the Charity Contract Data*/
     async loadBlockchain(){
       
             let ethereum= window.ethereum;
@@ -124,11 +123,6 @@ export default class ContributePage extends Component {
                 this.setState({charityGoal:web3.utils.fromWei(charityGoal)},()=>console.log());
             }
 
-            const remainingAmount = await charityContract.methods.checkRemainingAmount().call()
-            if (this._isMounted){
-                this.setState({remainingAmount:web3.utils.fromWei(remainingAmount)},()=>console.log());
-            }
-
             const currentBalance = await charityContract.methods.currentBalance().call()
             if (this._isMounted){
                 this.setState({currentBalance:web3.utils.fromWei(currentBalance)},()=>console.log());
@@ -139,13 +133,15 @@ export default class ContributePage extends Component {
                 this.setState({charityDescription:charityDescription},()=>console.log());
             }
             const charityStatus = await charityContract.methods.checkState().call()
+            const charityExpired = await charityContract.methods.checkIfCharityExpired().call()
             const charityDeadline = await charityContract.methods.raiseBy().call()
             
             if (this._isMounted){
               this.setState({unixTime:charityDeadline.slice(0,10),
                 deadline:new Date(parseInt(charityDeadline,10)*1000),
+                charityExpired: charityExpired,
                 charityStatus:parseInt(charityStatus)
-                });
+                },()=>console.log('expired?',this.state.charityExpired));
             }
 
             const contractOwner = await charityContract.methods.charityOwnerAddress().call()
@@ -157,25 +153,29 @@ export default class ContributePage extends Component {
             if (this._isMounted){
               this.setState({isRegistered:isRegistered},()=>console.log());
             }
+
+            
+            const remainingAmount = await charityContract.methods.checkRemainingAmount().call()
+            if (this._isMounted && web3.utils.fromWei(remainingAmount) <= this.state.charityGoal){
+
+                this.setState({remainingAmount:web3.utils.fromWei(remainingAmount)},()=>console.log());
+                
+            }
            
             charityContract.events.fundingReceived({toBlock:'latest'})
             .on('data',async(log) => {  
        
             const newRemainingAmount = await charityContract.methods.checkRemainingAmount().call()
-            if (this._isMounted){
+            if (this._isMounted && web3.utils.fromWei(newRemainingAmount) <= this.state.charityGoal){
+              
                 this.setState({remainingAmount:web3.utils.fromWei(newRemainingAmount)},()=>console.log());
              }
                 
-            })
+          })
+    }
+    /*End of Loading & Setting the Charity Contract Data*/
 
-        }
-
-    drawerToggleClick = ()=>{
-            this.setState((prevState)=>{
-               return {sideDrawerOpen: !prevState.sideDrawerOpen, statusDrawerOpen: false};
-           });
-              };
-
+    //Toggles the display of Owner Button
     toggleOwnerHandler = ()=>{
         if(!this.state.charityOwnerOpen){
             this.setState({descriptionOpen:false, contributeOpen:false}); 
@@ -185,6 +185,7 @@ export default class ContributePage extends Component {
         },()=>console.log());   
     };
 
+    //Toggles the display of Description Button
     toggleDescriptionHandler = ()=>{
         if(!this.state.descriptionOpen){
             this.setState({contributeOpen:false, charityOwnerOpen:false}); 
@@ -194,6 +195,7 @@ export default class ContributePage extends Component {
         },()=>console.log());   
     };
 
+    //Toggles the display of Contribute Button
     toggleContributeHandler = ()=>{
         if(!this.state.contributeOpen){
             this.setState({descriptionOpen:false, charityOwnerOpen:false}); 
@@ -202,18 +204,21 @@ export default class ContributePage extends Component {
        },()=>console.log());   
     };
 
-   contributionChange = (event)=>{
-   let amount = event.target.value;
-   this.setState({contributionAmount:amount},()=>console.log(this.state.contributionAmount))
+    //Sets the contribution amount on user input
+    contributionChange = (event)=>{
+      let amount = event.target.value;
+      this.setState({contributionAmount:amount},()=>console.log())
    };
  
 
   render() {    
+
     let owner = false;
     if(this.state.contractOwner === this.props.account){
       owner = true;
     }
-     
+
+    /*Renders the Doughnut Chart Settings*/
     this.genderChart = (canvas) => {
         const ctx = canvas.getContext("2d")
         const gradient = ctx.createLinearGradient(100,150,140,50,100);
@@ -228,7 +233,7 @@ export default class ContributePage extends Component {
         gradient3.addColorStop(1, 'purple');
         gradient3.addColorStop(0, 'aqua'); 
 
-        if(this.props.eventDetails !==0){
+        
         return {
           labels: ['Hydro Funded','Hydro To Fill'],
           datasets: [{
@@ -245,27 +250,12 @@ export default class ContributePage extends Component {
             data: [(this.state.charityGoal - this.state.remainingAmount),(this.state.charityGoal - (this.state.charityGoal - this.state.remainingAmount))],
             }],					
             }	
-          }
-         else{
-          return {
-            labels: ['Hydro Funded','Hydro To Fill'],
-            datasets: [{
-              label:'Hydro',
-              fontColor:'black',
-              backgroundColor: [gradient2,gradient2],
-              borderColor: 'rgb(228, 83, 138)',
-              borderWidth: .8,
-              hoverBackgroundColor: ['rgb(243, 210, 103)','rgb(243, 210, 103)'],
-              hoverBorderColor: 'pink',
-              hoverBorderWidth:1,
-              weight:5,
-              borderAlign:'center',
-              data: [10,10 - 5],
-              }],					
-              }	
-           }
-          }
+          
+      }
+    /*End of renders the Doughnut Chart Settings*/
 
+
+    /*Sets the Display & ClassName of Buttton & Drawers Dynamically*/
     let drawerOwnerClasses = "donationOwner";
     let drawerOwnerOpen = "ownerButton";
     let arrowOwner = <p>Owner</p>
@@ -287,80 +277,100 @@ export default class ContributePage extends Component {
       drawerDescriptionOpen = "descriptionButtonMargined";
       drawerContributeOpen = "contributeButtonMargined";
       drawerGoBack= "backButtonMargined-1";
-       }
+      }
 
     if(this.state.descriptionOpen){
-        drawerDescriptionClasses = "donationDescription Open"; 
-        drawerDescriptionOpen = "descriptionButton Open"; 
-        arrowDescription = <i class="fas fa-times-circle"></i>
-        drawerContributeOpen = "contributeButtonMargined";
-        drawerGoBack= "backButtonMargined-1";
-        }
+      drawerDescriptionClasses = "donationDescription Open"; 
+      drawerDescriptionOpen = "descriptionButton Open"; 
+      arrowDescription = <i class="fas fa-times-circle"></i>
+      drawerContributeOpen = "contributeButtonMargined";
+      drawerGoBack= "backButtonMargined-1";
+      }
     
     if(this.state.contributeOpen && !this.state.descriptionOpen){
       drawerContributeClasses = "donationContribute Open"; 
       drawerContributeOpen = "contributeButton Open"; 
       arrowContribute = <i class="fas fa-times-circle"></i>
       drawerGoBack= "backButtonMargined-2";
-        }
-    
-    
+      }
+    /* End of Setting the Display & ClassName of Buttons & Drawers*/
+
     return (
         
-        <div style={{width: '100%',textAlign:'center'}}>
+      <div style={{width: '100%',textAlign:'center'}}>
 
-      <div className={drawerOwnerClasses}>
-      <p>Contract Owner</p> 
-      <p title = {this.state.contractOwner} className="mb-0" style={{fontSize: '14px'}}>Owner Address: {this.state.contractOwner.slice(0,5)+'...'}</p>
-      <p title =  {numeral(this.state.currentBalance).format('0,00') + ' Hydro'} className="mb-0" style={{fontSize: '14px'}}>Charity Balance: {numeral(this.state.currentBalance).format('0,00')} <img src={hydro} className="mb-1 mr-2"  border={1} alt="Hydro logo" width={15}/></p>
-      
-      <div className="group mb-3 mt-3">
-					<div className="input-group-prepend">
-						<span className="input-group-withdraw">ETH</span>
-							<input className="withdraw" type="text" min="0"  autoComplete="off"  />
-                    </div>
-                <label className="withdrawLabel mt-2">Withdraw To Ethereum Address</label>
-				</div>
-      {owner && this.state.currentBalance > 0?<ContributeButton readyText='Withdraw Balance' 
-        style={{display:'inline-block',textAlign:'center'}} 
-        className="txButton mt-2" 
-        method={()=>this.state.charityContract.methods.withdrawContributions(this.state.sendTo)}
-      />: <button className="txButton"> Unavailable </button>}
-      
-      </div>
-      <div className={drawerOwnerOpen} onClick={this.toggleOwnerHandler}>
-         {arrowOwner}
-      </div>
-            
-      <div className={drawerDescriptionClasses}>
-      <p>Description</p> 
-      {this.state.charityDescription}
-      </div>
-      <div className={drawerDescriptionOpen} onClick={this.toggleDescriptionHandler}>
-         {arrowDescription}
-      </div>
-
-      <div className={drawerContributeClasses}>
-      <p>Contribute</p> 
-      
-      {this.state.isRegistered ? <div className="form-group row">
-			<div className="group mb-3">
-				<div className="input-group-prepend">
-				<span className="input-group-hydro" width={5}><img src={hydro} className="event_price-image"  alt="Hydro logo" width={20}/></span>
-				<input className="contributeInput" type="number" min="0"  autoComplete="off" onChange={this.contributionChange}/>
+        <div className={drawerOwnerClasses}>
+          <p>Contract Owner</p> 
+          <p title = {this.state.contractOwner} className="mb-0" style={{fontSize: '14px'}}>Owner Address: {this.state.contractOwner.slice(0,5)+'...'}</p>
+          <p title =  {numeral(this.state.currentBalance).format('0,00') + ' Hydro'} 
+            className="mb-0" style={{fontSize: '14px'}}>
+            Charity Balance: {numeral(this.state.currentBalance).format('0,00')} <img src={hydro} className="mb-1 mr-2"  border={1} alt="Hydro logo" width={15}/>
+          </p>
+          
+          <div className="form-group row">
+            <div className="group mb-3 mt-3">
+					    <div className="input-group-prepend">
+						      <span className="input-group-withdraw">ETH</span>
+							      <input className="contributeInput" type="text" min="0"  autoComplete="off"  />
               </div>
-        <label className="contributeLabel mt-2">How much do you want to contribute?</label>
-			</div>
-		</div> : <p>You are not registered to this charity.</p> }
+              <label className="withdrawLabel mt-2">Withdraw To Ethereum Address</label>
+				    </div>
+          </div>
 
-    {this.state.isRegistered ? <ContributeButton readyText='Contribute' 
-                style={{display:'inline-block',textAlign:'center'}} 
-                className="voteButton" 
-                method={()=>this.state.charityContract.methods.contribute(this.state.contributionAmount)}
-                /> : <button className="txButton" onClick = {this.props.subPageRegistration}> Go To Registration Page</button> }
-    
-       
-      </div>
+          {owner && this.state.currentBalance > 0?<ContributeButton readyText='Withdraw Balance' 
+            style={{display:'inline-block',textAlign:'center'}} 
+            className="txButton mt-2" 
+            method={()=>this.state.charityContract.methods.withdrawContributions(this.props.account)}/> : <button className="txDisabled"> Withdraw Balance </button>}    
+          </div>
+
+          <div className={drawerOwnerOpen} onClick={this.toggleOwnerHandler}>
+          {arrowOwner}
+        </div>
+            
+        <div className={drawerDescriptionClasses}>
+          <p>Description</p> 
+          {this.state.charityDescription}
+        </div>
+        <div className={drawerDescriptionOpen} onClick={this.toggleDescriptionHandler}>
+         {arrowDescription}
+        </div>
+
+        {!this.state.charityExpired  && <div className={drawerContributeClasses}>
+          <p>Contribute</p> 
+          
+          {this.state.isRegistered ? <div className="form-group row">
+			    <div className="group mb-3">
+				    <div className="input-group-prepend">
+				      <span className="input-group-withdraw" width={5}><img src={hydro} className="hydro-logo"  alt="Hydro logo" width={20}/></span>
+				      <input className="contributeInput" type="number" min="0"  autoComplete="off" onChange={this.contributionChange}/>
+            </div>
+              <label className="contributeLabel mt-2">How much do you want to contribute?</label>
+			    </div>
+		    </div> : <p>You are not registered to this charity.</p> }
+      
+          {this.state.isRegistered ? <ContributeButton readyText='Contribute' 
+            style={{display:'inline-block',textAlign:'center'}} 
+            className="voteButton" 
+            method={()=>this.state.charityContract.methods.contribute(this.state.contributionAmount)}
+            /> : <button className="txButton" onClick = {this.props.subPageRegistration}> Go To Registration Page</button> }
+          </div>}
+
+          {this.state.charityExpired && <div className={drawerContributeClasses}>
+          <p>Contribute</p> 
+          
+          {this.state.isRegistered ? <div className="form-group row">
+			    <div className="group mb-3">
+				    <div className="input-group-prepend">
+				      <span className="input-group-withdraw" width={5}><img src={hydro} className="hydro-logo"  alt="Hydro logo" width={20}/></span>
+				      <input className="contributeInput" type="number" min="0"  autoComplete="off" onChange={this.contributionChange}/>
+            </div>
+              <label className="contributeLabel mt-2">How much do you want to contribute?</label>
+			    </div>
+          </div> : <p>This Charity is close & You are not registered.</p>}
+
+          <button className="txDisabled"> Contribute </button> 
+          </div>}
+          
       <div className={drawerContributeOpen} onClick={this.toggleContributeHandler}>
          {arrowContribute}
       </div>

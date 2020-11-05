@@ -5,11 +5,7 @@
     background:#061b2f;
     background:#17548d;
     background:linear-gradient(to bottom,#647291,rgb(0, 0, 5));
-    backgrdound:linear-gradient(to bottom,#91648a,rgb(0, 0, 5));
     background:linear-gradient(to left,rgb(2, 2, 3),rgb(24, 65, 141),rgb(2, 3, 3));
-
-    backdground:linear-gradient(to top,rgb(228, 195, 235),rgb(13, 110, 116),rgb(3, 49, 51));
-    backgdround-image: url('./logo.png');
     font-size: 1.2rem;
     border-radius: 5px!important;
     height:560px;
@@ -24,7 +20,14 @@
 .rows {
   margin: 0px 0px;
   width:100%;
+  height:430px;
 
+}
+
+
+.hydro-logo{
+  border:1px solid rgb(255, 255, 255);
+  border-radius: 50%;
 }
 
 .charity-navbar{
@@ -266,7 +269,7 @@
   transform:translateX(-0%);
   font-size: 0px;
   border-bottom:1px solid rgba(255, 255, 255, 0.664);
-  border-bottom-right-radius: 15px;
+  border-bottom-right-radius: 10px;
   height:250px;
   width:0%;
   -webkit-text-stroke:0.00001px #3433;
@@ -661,7 +664,6 @@
   border-radius:5px;
   font-size:20px;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2); /* this adds the "card" effect */
-  
   text-align: center;
   margin-top:20px;
   margin-bottom:15px;
@@ -671,6 +673,10 @@
   cursor:pointer;
   background:linear-gradient(to bottom,#083863,rgb(0, 0, 5));
   box-shadow:5px 10px 15px rgb(10, 10, 10);
+}
+
+.charityCard:hover{
+  border: 1px solid rgba(192, 154, 48, 0.993);
 }
 
 .charity-card-header{
@@ -705,7 +711,7 @@
   padding: 0.35rem 1.25rem 1.25rem;
   margin-bottom: -1px;
   background-color:transparent;
-  border-top: 1px solid rgb(92, 92, 92);
+  border-top: 1px solid rgba(92, 92, 92, 0.342);
   letter-spacing: 1px;
   font-weight: 500;
   color:rgb(252, 252, 252);
@@ -719,11 +725,11 @@
   }
 
 .charity-deadline-close{
-margin-bottom:10px;
-color:rgb(238, 88, 42);
-font-size: 15px;
-font-family: 'Anonymous Pro', monospace;
-}
+  margin-bottom:10px;
+  color:rgb(238, 88, 42);
+  font-size: 15px;
+  font-family: 'Anonymous Pro', monospace;
+  }
 
 .charity-awaiting-approval{
   margin-bottom:10px;
@@ -799,23 +805,6 @@ font-family: 'Anonymous Pro', monospace;
   
 }
 
-.withdraw{  
-  width:70%;
-  padding:5px;
-  color:rgb(4, 3, 27);
-  background:#e6e7eb;
-  border-top-right-radius:5px;
-  border-bottom-right-radius:5px;
-  border:1px solid  rgb(0, 0, 0);
-  border-left:none;     
-  text-transform: capitalize;
-}
-
-.withdraw:active,.withdraw:focus{
-  outline:none!important;
-  color:rgb(1, 1, 7);
-}
-
 .input-group-charity {
   display: flex;
   align-items: center;
@@ -848,37 +837,54 @@ font-family: 'Anonymous Pro', monospace;
 }
 
 /* width */
-.charityProfile::-webkit-scrollbar,.registerAsContributor-card::-webkit-scrollbar {
+.charityProfile::-webkit-scrollbar,
+.registerAsContributor-card::-webkit-scrollbar,
+.table-wrapper::-webkit-scrollbar,
+.donationDescription.Open::-webkit-scrollbar{
   width: 5px;
 }
 
 /* Track */
-.charityProfile::-webkit-scrollbar-track, .registerAsContributor-card::-webkit-scrollbar-track {
+.charityProfile::-webkit-scrollbar-track, 
+.registerAsContributor-card::-webkit-scrollbar-track,
+.table-wrapper::-webkit-scrollbar-track,
+.donationDescription.Open::-webkit-scrollbar-track {
   box-shadow: inset 0 0 3px rgb(20, 20, 17);
   border-top-right-radius: 35px;
   border-bottom-right-radius: 35px;
   background:transparent;
+  
 }
 
 /* Handle */
-.charityProfile::-webkit-scrollbar-thumb, .registerAsContributor-card::-webkit-scrollbar-thumb  {
+.charityProfile::-webkit-scrollbar-thumb, 
+.registerAsContributor-card::-webkit-scrollbar-thumb,
+.table-wrapper::-webkit-scrollbar-thumb {
   background: linear-gradient(45deg, rgb(4, 7, 27),rgb(207, 180, 81), rgb(5, 7, 26));
   border-top-right-radius: 35px;
   border-bottom-right-radius: 35px;
 }
 
+.donationDescription.Open::-webkit-scrollbar-thumb{
+  background: linear-gradient(to bottom, rgba(4, 7, 27, 0), rgba(214, 211, 211, 0.664));
+  border-bottom-right-radius: 35px;
+}
 
 .registrationWrapper-charity{
   display:flex;
   margin-top:10px;
+ 
 
+}
+
+.registrationWrapper-charity p{
+  margin-bottom:10px;
 }
 
 .registerAsContributor-card{
 
     border:2px solid #cea430;
     background:rgb(5, 13, 43);
-    
     color:rgb(255, 255, 255);
     margin:20px;
     border-radius:7px;
@@ -897,7 +903,6 @@ font-family: 'Anonymous Pro', monospace;
 .registerAsContributor-card2{
 
   border:2px solid #cea430;
-  bofder-bottom:2px solid #cea430;
   background:rgb(5, 13, 43);
   color:rgb(255, 255, 255);
   margin:20px;
@@ -928,6 +933,7 @@ font-family: 'Anonymous Pro', monospace;
   border: 1px solid #cea430;
 }
 
+
 .registeredEIN{
   background:linear-gradient(40deg,rgb(134, 13, 214),rgb(11, 255, 243));
   border: 1px solid rgb(226, 175, 79);
@@ -950,6 +956,90 @@ font-family: 'Anonymous Pro', monospace;
   overflow:hidden;
   height:390px;
 }
+
+.Approved{
+  color:rgb(24, 223, 24);
+ 
+}
+
+.Awaiting{
+  color:rgb(235, 178, 54);
+  
+}
+
+.Disabled{
+  color:rgb(247, 25, 25);
+
+}
+
+
+.table-wrapper{
+  margin-top:-10px;
+  padding-top:5px;
+  background:rgba(0, 0, 0, 0.301);
+  background: transparent;
+  font-size:0.9rem;
+  border-top: none;
+  text-align:center;
+  overflow-y: scroll;
+  height:390px;
+  color:rgb(216, 216, 216);
+  margin-left:5px;
+}
+
+.table-size {
+  text-align:center;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  padding-left: 5rem;
+  padding-right: 5rem;
+  width:100%;
+  min-width:1000px;
+  border-bottom:1px solid rgb(46, 46, 46);
+  border:1px solid rgba(248, 248, 248, 0.329);
+
+}
+
+.list-header{
+  padding-top:5px;
+  padding-bottom:5px;
+  text-align:center;
+  border-bottom:1px solid rgba(248, 248, 248, 0.329); 
+}
+
+.table-size th{
+  padding-bottom:5px; 
+  
+}
+
+.table-size tr{
+  border-bottom:1px solid rgba(241, 238, 238, 0.329); 
+  padding-bottom:5px; 
+  font-size: 16px;
+}
+
+.table-size tr:hover{
+  background:linear-gradient(40deg,rgba(98, 10, 156, 0.39),rgba(15, 241, 211, 0.144),rgba(15, 177, 241, 0.308),rgba(15, 38, 241, 0.096));
+  cursor: pointer;
+}
+
+.list-img{
+  height:30px;
+  border-radius:10px;
+  width:40px;
+  border:1px solid white;
+}
+
+.cursor-pointer a{
+  color:rgb(255, 255, 255);
+}
+
+.cursor-pointer a:hover{
+  color:rgb(231, 184, 81);
+  text-decoration: none;
+}
+
+
 
 
 
