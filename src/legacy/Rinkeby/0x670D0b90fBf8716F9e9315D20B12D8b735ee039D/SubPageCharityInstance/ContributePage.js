@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import Web3 from 'web3';
 import '../Charity-style.css';
 import CharityContractABI from '../ABI/CharityContractABI';
+import {hydroRinkeby_ABI,hyrdoRinkeby_Address} from '../ABI/HydroTokenRinkebyABI';
 import hydro from '../Images/hydro.png';
 import ContributeButton from '../Buttons/ContributeButton';
 import Deadline from '../Useable/Deadline';
@@ -27,7 +28,7 @@ var originalDoughnutDraw = Chart.controllers.doughnut.prototype.draw;
         ctx.textBaseline = "middle";
 
 	    var percentage = 0;
-	    var total = chart.config.data.datasets[0].data[0] + chart.config.data.datasets[0].data[1]
+      var total = parseInt(chart.config.data.datasets[0].data[0])+parseInt(chart.config.data.datasets[0].data[1])
 	      percentage = numeral(chart.config.data.datasets[0].data[0] *100/total).format('0.00')
 	    var text = percentage+'%',
           textX = Math.round((width - ctx.measureText(text).width) / 2),
@@ -69,6 +70,7 @@ export default class ContributePage extends Component {
             descriptionOpen:false,
             contributeOpen:false,
             isRegistered:false,
+            hydroBalance:0,
         }
        
 	}
@@ -114,6 +116,11 @@ export default class ContributePage extends Component {
             if (this._isMounted){
                 this.setState({charityContract:charityContract},()=>console.log());
             }
+            const hydroToken = new web3.eth.Contract(hydroRinkeby_ABI,hyrdoRinkeby_Address);
+            const hydroBalance = await hydroToken.methods.balanceOf(this.props.Address).call()
+            if (this._isMounted){
+                this.setState({hydroBalance:web3.utils.fromWei(hydroBalance)},()=>console.log());
+            }
             const title = await charityContract.methods.title().call()
             if (this._isMounted){
                 this.setState({title:title});
@@ -154,10 +161,9 @@ export default class ContributePage extends Component {
             if (this._isMounted){
               this.setState({isRegistered:isRegistered},()=>console.log());
             }
-
-            
+ 
             const remainingAmount = await charityContract.methods.checkRemainingAmount().call()
-            if (this._isMounted && web3.utils.fromWei(remainingAmount) <= this.state.charityGoal){
+            if (this._isMounted){
 
                 this.setState({remainingAmount:web3.utils.fromWei(remainingAmount)},()=>console.log());
                 
@@ -170,7 +176,7 @@ export default class ContributePage extends Component {
             const updatedBalance = await charityContract.methods.currentBalance().call()
             this.setState({currentBalance:web3.utils.fromWei(updatedBalance)},()=>console.log());
      
-            if (this._isMounted && web3.utils.fromWei(newRemainingAmount) <= this.state.charityGoal){
+            if (this._isMounted){
               
                 this.setState({remainingAmount:web3.utils.fromWei(newRemainingAmount)},()=>console.log());
              }
@@ -218,9 +224,16 @@ export default class ContributePage extends Component {
   render() {    
 
     let owner = false;
+    let chartData = [this.state.currentBalance,(this.state.charityGoal - this.state.currentBalance)];
     if(this.state.contractOwner === this.props.account){
       owner = true;
     }
+
+    if(parseInt(this.state.currentBalance) > parseInt(this.state.charityGoal)){
+      chartData = [this.state.currentBalance,0];
+    }
+
+   
 
     /*Renders the Doughnut Chart Settings*/
     this.genderChart = (canvas) => {
@@ -239,7 +252,7 @@ export default class ContributePage extends Component {
 
         
         return {
-          labels: ['Hydro Funded','Hydro To Fill'],
+          labels: ['Hydro Funded','Hydro to Fill'],
           datasets: [{
             label:'Hydro',
             fontColor:'black',
@@ -251,9 +264,10 @@ export default class ContributePage extends Component {
             hoverBorderWidth:2,
             weight:5,
             borderAlign:'center',
-            data: [(this.state.charityGoal - this.state.remainingAmount),(this.state.charityGoal - (this.state.charityGoal - this.state.remainingAmount))],
+            data: chartData,
             }],					
-            }	
+           }	
+          
           
       }
     /*End of renders the Doughnut Chart Settings*/
@@ -306,9 +320,9 @@ export default class ContributePage extends Component {
         <div className={drawerOwnerClasses}>
           <p>Contract Owner</p> 
           <p title = {this.state.contractOwner} className="mb-0" style={{fontSize: '14px'}}>Owner Address: {this.state.contractOwner.slice(0,5)+'...'}</p>
-          <p title =  {numeral(this.state.currentBalance).format('0,00') + ' Hydro'} 
+          <p title =  {numeral(this.state.hydroBalance).format('0,00') + ' Hydro'} 
             className="mb-0" style={{fontSize: '14px'}}>
-            Charity Balance: {numeral(this.state.currentBalance).format('0,00')} <img src={hydro} className="mb-1 mr-2"  border={1} alt="Hydro logo" width={15}/>
+            Charity Balance: {numeral(this.state.hydroBalance).format('0,00')} <img src={hydro} className="mb-1 mr-2"  border={1} alt="Hydro logo" width={15}/>
           </p>
           
           <div className="form-group row">
@@ -321,7 +335,7 @@ export default class ContributePage extends Component {
 				    </div>
           </div>
 
-          {owner && this.state.currentBalance > 0?<ContributeButton readyText='Withdraw Balance' 
+          {owner && this.state.hydroBalance > 0?<ContributeButton readyText='Withdraw Balance' 
             style={{display:'inline-block',textAlign:'center'}} 
             className="txButton mt-2" 
             method={()=>this.state.charityContract.methods.withdrawContributions(this.props.account)}/> : <button className="txDisabled"> Withdraw Balance </button>}    
@@ -410,7 +424,7 @@ export default class ContributePage extends Component {
     					}}/> 
                         </div>
       <div className = "donationFunded"> <img src={hydro} className="mb-1 mr-2"  border={1} alt="Hydro logo" width={20}/>
-      Funded: {numeral(this.state.charityGoal - this.state.remainingAmount).format('0,00')}/{numeral(this.state.charityGoal).format('0,00')}
+      Funded: {numeral(this.state.currentBalance).format('0,00')}/{numeral(this.state.charityGoal).format('0,00')}
       </div>
 
       <div className = "donationFunded"><Deadline deadline={this.state.deadline} unixTime={this.state.unixTime} charityStatus={this.state.charityStatus}/>

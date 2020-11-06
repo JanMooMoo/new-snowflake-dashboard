@@ -16,14 +16,15 @@ export default class CharityCards extends Component {
 			this.state = {
             charityContract:[],
             title:'',
-            deadline:'',
-            unixTime:'',
+ 
+            unixTime:0,
             account:[],
-            blockNumber:'',
+            blockNumber:0,
 
+            deadline:0,
+            funded:0,
             charityGoal:0,
-            remainingAmount:0,
-            charityStatus:'',
+            charityStatus:1,
             loading:true,
                      
         }
@@ -85,18 +86,19 @@ export default class CharityCards extends Component {
                 });
             }
             this.setState({loading:false})
-            const remainingAmount = await charityContract.methods.checkRemainingAmount().call()
-            if (this._isMounted && web3.utils.fromWei(remainingAmount) <= this.state.charityGoal){
-                this.setState({remainingAmount:web3.utils.fromWei(remainingAmount)},()=>console.log());
+
+            const funded = await charityContract.methods.currentBalance().call()
+            if (this._isMounted){
+                this.setState({funded:web3.utils.fromWei(funded)},()=>console.log());
             }
           
             charityContract.events.fundingReceived({toBlock:'latest'})
             .on('data',async(log) => {  
-       
-            const newRemainingAmount = await charityContract.methods.checkRemainingAmount().call()
-            if (this._isMounted && web3.utils.fromWei(newRemainingAmount) <= this.state.charityGoal){  
-                this.setState({remainingAmount:web3.utils.fromWei(newRemainingAmount)},()=>console.log());
-             }       
+
+            const incomingDonation = await charityContract.methods.currentBalance().call()
+            if (this._isMounted){
+                    this.setState({funded:web3.utils.fromWei(incomingDonation)},()=>console.log());
+                }
           })
             
         }
@@ -105,7 +107,7 @@ export default class CharityCards extends Component {
   render() {
     let percentage = '0.00%';
     if(this.state.charityGoal > 0){
-    percentage = numeral((this.state.charityGoal - this.state.remainingAmount)*100/this.state.charityGoal).format('0.00')+ "%";
+    percentage = numeral((this.state.funded)*100/this.state.charityGoal).format('0.00')+ "%";
     }
     let title = this.state.title;
     if(this.state.title.length > 35){
@@ -123,7 +125,7 @@ export default class CharityCards extends Component {
             <div className="card-list">	
             {!this.state.loading &&<ul className="list-group list-group-flush"> 
                    <CardDeadline deadline={this.state.deadline} unixTime={this.state.unixTime} charityStatus={this.state.charityStatus}/>
-                    <li className="list-group-charity small"><img src={hydro} className="mb-1 mr-1"  border={1} alt="Hydro logo" width={20}/> {numeral(this.state.charityGoal - this.state.remainingAmount).format('0,00')}/{numeral(this.state.charityGoal).format('0,00')}<div class="progress"><div class="progress-inner" style={{"width":percentage }}></div><div class="progress-outer" style={{"width":"100%" }}></div><p className="  mb-0 text-center">{percentage}</p></div></li>	
+                    <li className="list-group-charity small"><img src={hydro} className="mb-1 mr-1"  border={1} alt="Hydro logo" width={20}/> {numeral(this.state.funded).format('0,00')}/{numeral(this.state.charityGoal).format('0,00')}<div class="progress"><div class="progress-inner" style={{"width":percentage }}></div><div class="progress-outer" style={{"width":"100%" }}></div><p className="  mb-0 text-center">{percentage}</p></div></li>	
                 </ul>}
                 {this.state.loading &&<div className = "charity-awaiting-approval">Loading...</div>}
 			    </div>          
